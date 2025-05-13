@@ -11,7 +11,7 @@ export default function Adminpage() {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        fetch('http://api-server:5000/api/products')
+        fetch('http://localhost:5000/api/products')
           .then(res => res.json())
           .then(data => {
             setProducts(data);
@@ -22,7 +22,7 @@ export default function Adminpage() {
     const handleAdd = async () => {
         try {
             // 1. ตรวจสอบว่ามีข้อมูลสินค้าในฐานข้อมูลที่มีค่าเหมือนกับข้อมูลที่จะเพิ่มหรือไม่
-            const response = await fetch('http://localhost:3000/api/products');
+            const response = await fetch('http://localhost:5000/api/products');
             const existingProducts = await response.json();
             
             const isProductExists = existingProducts.some((product) =>
@@ -35,7 +35,7 @@ export default function Adminpage() {
             }
 
             // 2. ถ้าไม่มีข้อมูลซ้ำ จึงทำการเพิ่มสินค้าใหม่
-            const addResponse = await fetch('http://localhost:3000/api/products', {
+            const addResponse = await fetch('http://localhost:5000/api/products', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export default function Adminpage() {
             alert('Product added successfully!');
 
             // 3. รีเฟรชข้อมูลจากฐานข้อมูลใหม่
-            const updatedProducts = await fetch('http://localhost:3000/api/products')
+            const updatedProducts = await fetch('http://localhost:5000/api/products')
             .then((res) => res.json())
             .catch((err) => console.error('Error fetching products:', err));
 
@@ -77,7 +77,7 @@ export default function Adminpage() {
 
 const handleDelete = async (productId) => {
     try {
-        const response = await fetch(`http://localhost:3000/api/products/${productId}`, {
+        const response = await fetch(`http://localhost:5000/api/products/${productId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

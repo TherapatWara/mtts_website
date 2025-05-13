@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json()); // << ต้องมาก่อน route POST
 
 // MongoDB connection
-mongoose.connect('mongodb://mongo:27017/mongoproducts_db', {
+mongoose.connect('mongodb://mongo:27017/products_db', {
 }).then(() => {
   console.log('Connected to MongoDB');
 }).catch((err) => {

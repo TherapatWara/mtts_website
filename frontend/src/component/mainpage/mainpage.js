@@ -9,7 +9,7 @@ export default function Mainpage() {
   const [clickstatus, setClickstatus] = useState(0);
 
   useEffect(() => {
-    fetch('http://api-server:5000/api/products')
+    fetch('http://localhost:5000/api/products')
       .then(res => res.json())
       .then(data => {
         setProducts(data);

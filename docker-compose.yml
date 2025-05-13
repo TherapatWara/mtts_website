@@ -18,11 +18,10 @@ services:
     networks:
       - mern-app
     depends_on:
-      - mongo
-    command: ["node", "index.js"]  # กำหนดให้ backend เริ่มต้นถูกต้อง
+      - mongo # กำหนดให้ backend เริ่มต้นถูกต้อง
 
   mongo:
-    image: mongo:3.6.19-xenial
+    image: mongo:latest
     ports:
       - "27017:27017"
     networks:
