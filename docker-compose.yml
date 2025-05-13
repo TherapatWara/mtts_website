@@ -1,0 +1,39 @@
+services:
+  react-app:
+    build:
+      context: ./frontend
+    image: react-app
+    stdin_open: true
+    ports:
+      - "3000:3000"
+    networks:
+      - mern-app
+
+  api-server:
+    build:
+      context: ./backend
+    image: api-server
+    ports:
+      - "5000:5000"
+    networks:
+      - mern-app
+    depends_on:
+      - mongo
+    command: ["node", "index.js"]  # กำหนดให้ backend เริ่มต้นถูกต้อง
+
+  mongo:
+    image: mongo:3.6.19-xenial
+    ports:
+      - "27017:27017"
+    networks:
+      - mern-app
+    volumes:
+      - mongo-data:/data/db
+
+networks:
+  mern-app:
+    driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local
