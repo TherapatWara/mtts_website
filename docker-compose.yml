@@ -18,7 +18,9 @@ services:
     networks:
       - mern-app
     depends_on:
-      - mongo # กำหนดให้ backend เริ่มต้นถูกต้อง
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/mtts
 
   mongo:
     image: mongo:latest
