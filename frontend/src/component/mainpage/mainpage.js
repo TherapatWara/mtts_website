@@ -3,19 +3,21 @@ import { FaSearch } from 'react-icons/fa';
 import './mainpage.css'
 
 export default function Mainpage() {
+  const apiUrl = process.env.REACT_APP_API_URL;
+
   const [value, setValue] = useState('');
   const [products, setProducts] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [clickstatus, setClickstatus] = useState(0);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/products')
+    fetch(`${apiUrl}/products`)
       .then(res => res.json())
       .then(data => {
         setProducts(data);
       })
       .catch(err => console.error('Error fetching products:', err));
-  }, []);
+  }, [apiUrl]);
 
   const handleChange = (e) => {
     setValue(e.target.value);
@@ -68,7 +70,7 @@ export default function Mainpage() {
                 <td>{product.brand}</td>
                 <td>{product.model}</td>
                 <td>{product.description}</td>
-                <td>{product.price}</td>
+                <td>{Number(product.price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
               </tr>
             ))}
           </tbody>
