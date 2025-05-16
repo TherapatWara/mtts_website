@@ -26,6 +26,9 @@ services:
 
   mongo:
     image: mongo:latest
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=tttteera
+      - MONGO_INITDB_ROOT_PASSWORD=Ttt9872088+
     ports:
       - "27017:27017"
     networks:
@@ -39,4 +42,5 @@ networks:
 
 volumes:
   mongo-data:
+    name: mongo-data
     driver: local
