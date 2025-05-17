@@ -120,8 +120,8 @@ const maintenanceSchema = new mongoose.Schema({
   serial: String,
   product: String,
   location: String,
-  startDate: Date,
-  endDate: Date,
+  startDate: String,
+  endDate: String,
   statusWarranty: { type: String, enum: ['in', 'out', 'IN', 'OUT'], required: true },
 });
 

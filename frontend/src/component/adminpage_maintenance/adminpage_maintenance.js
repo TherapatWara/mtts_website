@@ -140,8 +140,8 @@ export default function Adminpage() {
         setValue4(product.serial || '');
         setValue5(product.product || '');
         setValue6(product.location || '');
-        setValue7(formatDate(product.startDate));
-        setValue8(formatDate(product.endDate));
+        setValue7(product.startDate || '');
+        setValue8(product.endDate || '');
         setValue9(product.statusWarranty || '');
         setEditProductId(product._id);
     };
@@ -233,11 +233,11 @@ export default function Adminpage() {
 
                 <div className='input-group'>
                     <h2>Start  Date</h2>
-                    <input type="date" style={{width:'25vh'}} value={value7} onChange={(e) => setValue7(e.target.value)} />
+                    <input type="text" style={{width:'25vh'}} value={value7} onChange={(e) => setValue7(e.target.value)} />
                 </div>
                 <div className='input-group'>
                     <h2>End  Date</h2>
-                    <input type="date" style={{width:'25vh'}} value={value8} onChange={(e) => setValue8(e.target.value)} />
+                    <input type="text" style={{width:'25vh'}} value={value8} onChange={(e) => setValue8(e.target.value)} />
                 </div>
                 <div className='input-group'>
                     <h2>Status Warranty</h2>
