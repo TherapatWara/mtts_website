@@ -72,7 +72,6 @@ export default function Maintenancepage() {
               <th>Brand</th>
               <th>Model</th>
               <th>Serial</th>
-              <th>Product</th>
               <th>Location</th>
               <th>Start Date</th>
               <th>End Date</th>
@@ -86,10 +85,9 @@ export default function Maintenancepage() {
                 <td>{product.brand}</td>
                 <td>{product.model}</td>
                 <td>{product.serial}</td>
-                <td>{product.product}</td>
                 <td>{product.location}</td>
-                <td>{new Date(product.startDate).toLocaleDateString()}</td>
-                <td>{new Date(product.endDate).toLocaleDateString()}</td>
+                <td>{product.startDate}</td>
+                <td>{product.endDate}</td>
                 <td>{product.statusWarranty}</td>
               </tr>
             ))}

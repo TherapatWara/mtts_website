@@ -19,7 +19,6 @@ export default function Adminpage() {
     const [value2, setValue2] = useState('');
     const [value3, setValue3] = useState('');
     const [value4, setValue4] = useState('');
-    const [value5, setValue5] = useState('');
     const [value6, setValue6] = useState('');
     const [value7, setValue7] = useState('');
     const [value8, setValue8] = useState('');
@@ -67,7 +66,6 @@ export default function Adminpage() {
                 brand: value2,
                 model: value3,
                 serial: value4,
-                product: value5,
                 location: value6,
                 startDate: value7,
                 endDate: value8,
@@ -93,7 +91,6 @@ export default function Adminpage() {
             setValue2('');
             setValue3('');
             setValue4('');
-            setValue5('');
             setValue6('');
             setValue7('');
             setValue8('');
@@ -138,7 +135,6 @@ export default function Adminpage() {
         setValue2(product.brand || '');
         setValue3(product.model || '');
         setValue4(product.serial || '');
-        setValue5(product.product || '');
         setValue6(product.location || '');
         setValue7(product.startDate || '');
         setValue8(product.endDate || '');
@@ -159,7 +155,6 @@ export default function Adminpage() {
                     brand: value2,
                     model: value3,
                     serial: value4,
-                    product: value5,
                     location: value6,
                     startDate: value7,
                     endDate: value8,
@@ -184,7 +179,6 @@ export default function Adminpage() {
             setValue2('');
             setValue3('');
             setValue4('');
-            setValue5('');
             setValue6('');
             setValue7('');
             setValue8('');
@@ -223,10 +217,6 @@ export default function Adminpage() {
                     <input type="text" style={{width:'30vh'}} value={value4} onChange={(e) => setValue4(e.target.value)} />
                 </div>
                 <div className='input-group'>
-                    <h2>Product</h2>
-                    <input type="text" style={{width:'30vh'}} value={value5} onChange={(e) => setValue5(e.target.value)} />
-                </div>
-                <div className='input-group'>
                     <h2>Location</h2>
                     <input type="text" style={{width:'30vh'}} value={value6} onChange={(e) => setValue6(e.target.value)} />
                 </div>
@@ -262,7 +252,6 @@ export default function Adminpage() {
                         <th>Brand</th>
                         <th>Model</th>
                         <th>Serial</th>
-                        <th>Product</th>
                         <th>Location</th>
                         <th>Start Date</th>
                         <th>End Date</th>
@@ -278,7 +267,6 @@ export default function Adminpage() {
                                 <td>{product.brand}</td>
                                 <td>{product.model}</td>
                                 <td>{product.serial}</td>
-                                <td>{product.product}</td>
                                 <td>{product.location}</td>
                                 <td>{product.startDate}</td>
                                 <td>{product.endDate}</td>

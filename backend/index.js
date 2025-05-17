@@ -118,7 +118,6 @@ const maintenanceSchema = new mongoose.Schema({
   brand: String,
   model: String,
   serial: String,
-  product: String,
   location: String,
   startDate: String,
   endDate: String,
@@ -141,7 +140,7 @@ app.get('/api/maintenance', async (req, res) => {
 // POST new maintenance record
 app.post('/api/maintenance', async (req, res) => {
   try {
-    const {customer, brand, model, serial, product, location, startDate, endDate, statusWarranty, } = req.body;
+    const {customer, brand, model, serial, location, startDate, endDate, statusWarranty, } = req.body;
     console.log(' [POST] Incoming Data(maintenance):', { customer, brand, model, serial, product, location, startDate, endDate, statusWarranty });
 
     const newMaintenance = new Maintenance({
@@ -149,7 +148,6 @@ app.post('/api/maintenance', async (req, res) => {
       brand,
       model,
       serial,
-      product,
       location,
       startDate,
       endDate,
@@ -183,12 +181,12 @@ app.delete('/api/maintenance/:id', async (req, res) => {
 // PUT update maintenance record
 app.put('/api/maintenance/:id', async (req, res) => {
   const maintenanceId = req.params.id;
-  const { customer, brand, model, serial, product, location, startDate, endDate, statusWarranty } = req.body;
+  const { customer, brand, model, serial, location, startDate, endDate, statusWarranty } = req.body;
 
   try {
     const updatedMaintenance = await Maintenance.findByIdAndUpdate(
       maintenanceId,
-      { customer, brand, model, serial, product, location, startDate, endDate, statusWarranty },
+      { customer, brand, model, serial, location, startDate, endDate, statusWarranty },
       { new: true }
     );
 
