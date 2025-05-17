@@ -280,8 +280,8 @@ export default function Adminpage() {
                                 <td>{product.serial}</td>
                                 <td>{product.product}</td>
                                 <td>{product.location}</td>
-                                <td>{new Date(product.startDate).toLocaleDateString()}</td>
-                                <td>{new Date(product.endDate).toLocaleDateString()}</td>
+                                <td>{product.startDate}</td>
+                                <td>{product.endDate}</td>
                                 <td>{product.statusWarranty}</td>
                                 <td>
                                     <button className='delete_button' onClick={() => handleDelete(product._id)}>Delete</button>
