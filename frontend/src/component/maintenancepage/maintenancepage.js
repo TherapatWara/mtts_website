@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import './mainpage.css'
-import Navbar from '../navbar/navbar';
+import './maintencncepage.css'
+import Navbar from '../navbar/navbarmaintenancepage';
 
+export default function Maintenancepage() {
+    const navigate = useNavigate();
 
-export default function Mainpage() {
-  const navigate = useNavigate();
-    
     useEffect(() => {
-      const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
-      if (!isLoggedIn) {
-        alert('กรุณาเข้าสู่ระบบก่อน');
-        navigate('/');
-      }
-    }, []);
-    
+            const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
+            if (!isLoggedIn) {
+            alert('กรุณาเข้าสู่ระบบก่อน');
+            navigate('/');
+            }
+        }, []);
+        
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const [value, setValue] = useState('');
@@ -24,7 +23,7 @@ export default function Mainpage() {
   const [clickstatus, setClickstatus] = useState(0);
 
   useEffect(() => {
-    fetch(`${apiUrl}/products`)
+    fetch(`${apiUrl}/maintenance`)
       .then(res => res.json())
       .then(data => {
         setProducts(data);
@@ -38,9 +37,8 @@ export default function Mainpage() {
 
   const handleSearch = () => {
     const results = products.filter(product =>
-      product.product.toLowerCase().includes(value.toLowerCase()) ||
-      product.brand.toLowerCase().includes(value.toLowerCase()) ||
-      product.model.toLowerCase().includes(value.toLowerCase())
+      product.customer.toLowerCase().includes(value.toLowerCase()) ||
+      product.serial.toLowerCase().includes(value.toLowerCase())
     );
 
     setSearchResults(results);
@@ -70,21 +68,29 @@ export default function Mainpage() {
         <table>
           <thead>
             <tr>
-              <th>Product</th>
+              <th>Customer</th>
               <th>Brand</th>
               <th>Model</th>
-              <th>Description</th>
-              <th>Price</th>
+              <th>Serial</th>
+              <th>Product</th>
+              <th>Location</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Status Warranty</th>
             </tr>
           </thead>
           <tbody>
             {searchResults.map((product, index) => (
               <tr key={index}>
-                <td>{product.product}</td>
+                <td>{product.customer}</td>
                 <td>{product.brand}</td>
                 <td>{product.model}</td>
-                <td>{product.description}</td>
-                <td>{Number(product.price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td>{product.serial}</td>
+                <td>{product.product}</td>
+                <td>{product.location}</td>
+                <td>{new Date(product.startDate).toLocaleDateString()}</td>
+                <td>{new Date(product.endDate).toLocaleDateString()}</td>
+                <td>{product.statusWarranty}</td>
               </tr>
             ))}
           </tbody>

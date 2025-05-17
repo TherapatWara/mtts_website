@@ -112,6 +112,97 @@ app.get('/api/products', async (req, res) => {
   }
 });
 
+// maintenance page------------------------------------------------------------------------------------------------------
+const maintenanceSchema = new mongoose.Schema({
+  customer: { type: String, required: true },
+  brand: String,
+  model: String,
+  serial: String,
+  product: String,
+  location: String,
+  startDate: Date,
+  endDate: Date,
+  statusWarranty: { type: String, enum: ['in', 'out', 'IN', 'OUT'], required: true },
+});
+
+const Maintenance = mongoose.model('Maintenance', maintenanceSchema);
+// GET all maintenance
+app.get('/api/maintenance', async (req, res) => {
+  try {
+    const maintenances = await Maintenance.find();
+    console.log(` [GET] ${maintenances.length} maintenance records fetched`);
+    res.json(maintenances);
+  } catch (err) {
+    console.error('Error fetching maintenance:', err);
+    res.status(500).send('Error fetching maintenance');
+  }
+});
+
+// POST new maintenance record
+app.post('/api/maintenance', async (req, res) => {
+  try {
+    const {customer, brand, model, serial, product, location, startDate, endDate, statusWarranty, } = req.body;
+    console.log(' [POST] Incoming Data(maintenance):', { customer, brand, model, serial, product, location, startDate, endDate, statusWarranty });
+
+    const newMaintenance = new Maintenance({
+      customer,
+      brand,
+      model,
+      serial,
+      product,
+      location,
+      startDate,
+      endDate,
+      statusWarranty,
+    });
+
+    await newMaintenance.save();
+    res.status(201).json(newMaintenance);
+  } catch (err) {
+    console.error('Error saving maintenance:', err);
+    res.status(500).send('Error saving maintenance');
+  }
+});
+
+
+// DELETE maintenance record
+app.delete('/api/maintenance/:id', async (req, res) => {
+  const maintenanceId = req.params.id;
+  try {
+    const deletedMaintenance = await Maintenance.findByIdAndDelete(maintenanceId);
+    if (!deletedMaintenance) {
+      return res.status(404).send('Maintenance record not found');
+    }
+    res.status(200).json({ message: 'Maintenance record deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting maintenance:', err);
+    res.status(500).send('Error deleting maintenance');
+  }
+});
+
+// PUT update maintenance record
+app.put('/api/maintenance/:id', async (req, res) => {
+  const maintenanceId = req.params.id;
+  const { customer, brand, model, serial, product, location, startDate, endDate, statusWarranty } = req.body;
+
+  try {
+    const updatedMaintenance = await Maintenance.findByIdAndUpdate(
+      maintenanceId,
+      { customer, brand, model, serial, product, location, startDate, endDate, statusWarranty },
+      { new: true }
+    );
+
+    if (!updatedMaintenance) {
+      return res.status(404).send('Maintenance record not found');
+    }
+    res.status(200).json(updatedMaintenance);
+  } catch (err) {
+    console.error('Error updating maintenance:', err);
+    res.status(500).send('Error updating maintenance');
+  }
+});
+
+
 
 
 // ✅ ต้องอยู่ล่างสุด

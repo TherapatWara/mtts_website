@@ -10,8 +10,8 @@ export default function Navbar() {
       <div className='navbar'>
           <h1 onClick={() => navigate('/selectionpage')}>Multitech Solution</h1>
           <div className='page'>
-              <h2 onClick={() => navigate('/mainpage')}>Product</h2>
-              <h2 onClick={() => navigate('/manage')}>Manage</h2>
+              <h2 onClick={() => navigate('/maintenancepage')}>Maintenance</h2>
+              <h2 onClick={() => navigate('/manage_maintenancepage')}>Manage</h2>
           </div>
       </div>
     );

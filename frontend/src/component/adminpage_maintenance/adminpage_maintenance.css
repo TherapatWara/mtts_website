@@ -44,6 +44,18 @@ body input{
   align-items: flex-start;
 }
 
+.input-group select{
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.input-group option{
+    font-size: 18px;
+    border: none;
+}
+
 .input-container h2 {
   margin-bottom: 5px;
 }
@@ -87,7 +99,7 @@ table th{
 }
 
 table button{
-    margin-top: 5px;
+    
     color: white;
     border: none;
     border-radius: 30px;
