@@ -43,6 +43,21 @@ export default function Adminpage() {
         setFilteredProducts(result);
     }
 
+    const handleSearchUpdate = (data = products) => {
+        if (!searchTerm.trim()) {
+            setFilteredProducts([]);
+            return;
+        }
+        const searchLower = searchTerm.toLowerCase();
+        const result = data.filter(
+            (product) =>
+                product.product.toLowerCase().includes(searchLower) ||
+                product.brand.toLowerCase().includes(searchLower) ||
+                product.model.toLowerCase().includes(searchLower)
+        );
+        setFilteredProducts(result);
+    }
+
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             handleSearch();
@@ -182,16 +197,17 @@ export default function Adminpage() {
             if (!response.ok) {
                 throw new Error('Failed to update product');
             }
-
+            alert("แก้ไข " + value3 + " เรียบร้อย✅");
             console.log('Product updated successfully!');
             
             // โหลดข้อมูลใหม่
             const updatedProducts = await fetch(`${apiUrl}/products`)
                 .then((res) => res.json());
             
-            if(searchTerm !== '')
-            {
-                handleSearch();
+            setFilteredProducts([]);
+            if(searchTerm.trim() !== '')
+            { 
+                handleSearchUpdate(updatedProducts);
             }
 
             setProducts(updatedProducts);
@@ -204,6 +220,7 @@ export default function Adminpage() {
             setValue5('');
             setEditProductId(null);
         } catch (error) {
+            alert("ผิดพลาดในการแก้ไข❌");
             console.error('Error updating product:', error);
 
         }

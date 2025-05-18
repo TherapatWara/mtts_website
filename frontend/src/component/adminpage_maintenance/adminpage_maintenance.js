@@ -46,18 +46,18 @@ export default function Adminpage() {
     }
 
     const handleSearchUpdate = (data = products) => {
-    if (!searchTerm.trim()) {
-        setFilteredProducts([]);
-        return;
+        if (!searchTerm.trim()) {
+            setFilteredProducts([]);
+            return;
+        }
+        const searchLower = searchTerm.toLowerCase();
+        const result = data.filter(
+            (product) =>
+                product.customer.toLowerCase().includes(searchLower) ||
+                product.serial.toLowerCase().includes(searchLower)
+        );
+        setFilteredProducts(result);
     }
-    const searchLower = searchTerm.toLowerCase();
-    const result = data.filter(
-        (product) =>
-            product.customer.toLowerCase().includes(searchLower) ||
-            product.serial.toLowerCase().includes(searchLower)
-    );
-    setFilteredProducts(result);
-}
 
 
     const handleKeyDown = (e) => {
@@ -206,7 +206,7 @@ export default function Adminpage() {
             if (!response.ok) {
                 throw new Error('Failed to update product');
             }
-
+            alert("แก้ไข " + value4 + " เรียบร้อย✅");
             console.log('Product updated successfully!');
             
             // โหลดข้อมูลใหม่
@@ -231,6 +231,7 @@ export default function Adminpage() {
             setValue9('IN');
             setEditProductId(null);
         } catch (error) {
+            alert("ผิดพลาดในการแก้ไข❌");
             console.error('Error updating product:', error);
 
         }
@@ -320,7 +321,7 @@ export default function Adminpage() {
                     <td>{product.location}</td>
                     <td>{product.startDate}</td>
                     <td>{product.endDate}</td>
-                    <td>{product.statusWarranty}</td>
+                    <td style={{ textTransform: 'uppercase' }}>{product.statusWarranty}</td>
                     <td>
                         <button className='delete_button' onClick={() => handleDelete(product._id)}>Delete</button>
                         <button className='edit_button' onClick={() => {
@@ -348,7 +349,7 @@ export default function Adminpage() {
                         <td>{product.location}</td>
                         <td>{product.startDate}</td>
                         <td>{product.endDate}</td>
-                        <td>{product.statusWarranty}</td>
+                        <td style={{ textTransform: 'uppercase' }}>{product.statusWarranty}</td>
                         <td>
                         <button className='delete_button' onClick={() => handleDelete(product._id)}>Delete</button>
                         <button className='edit_button' onClick={() => {

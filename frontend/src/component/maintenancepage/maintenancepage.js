@@ -88,7 +88,7 @@ export default function Maintenancepage() {
                 <td>{product.location}</td>
                 <td>{product.startDate}</td>
                 <td>{product.endDate}</td>
-                <td>{product.statusWarranty}</td>
+                <td style={{ textTransform: 'uppercase' }}>{product.statusWarranty}</td>
               </tr>
             ))}
           </tbody>
