@@ -6,6 +6,7 @@ import Navbar from '../navbar/navbarindex';
 
 export default function Selectionpage() {
   const navigate = useNavigate();
+  const loginUser = localStorage.getItem('loggedUser');
   
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
@@ -22,13 +23,19 @@ export default function Selectionpage() {
       <div className='selection-fill'>
         
         <h1>SELECT</h1>
-        <div className='selection' onClick={() => navigate('/mainpage')}>
-            <h2>Product Price</h2>
-        </div>
+        {loginUser === 'admin' && (
+          <div className='selection' onClick={() => navigate('/mainpage')}>
+              <h2>Product Price</h2>
+          </div>
+        )}
+        
         <div className='selection' onClick={() => navigate('/maintenancepage')}>
-            <h2>Maintenance</h2>
+            <h2>Maintenance List</h2>
         </div>
-        <div className='selection-logout' onClick={() => {localStorage.removeItem('loggedIn'); navigate('/'); navigate('/');}}>
+        <div className='selection-logout' onClick={() => {
+             localStorage.removeItem('loggedIn'); navigate('/'); 
+             localStorage.removeItem('loggedUser'); navigate('/'); 
+        }}>
             <h2>Logout</h2>
         </div>
       </div>

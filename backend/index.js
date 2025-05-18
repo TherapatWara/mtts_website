@@ -141,7 +141,7 @@ app.get('/api/maintenance', async (req, res) => {
 app.post('/api/maintenance', async (req, res) => {
   try {
     const {customer, brand, model, serial, location, startDate, endDate, statusWarranty, } = req.body;
-    console.log(' [POST] Incoming Data(maintenance):', { customer, brand, model, serial, product, location, startDate, endDate, statusWarranty });
+    console.log(' [POST] Incoming Data(maintenance):', { customer, brand, model, serial, location, startDate, endDate, statusWarranty });
 
     const newMaintenance = new Maintenance({
       customer,

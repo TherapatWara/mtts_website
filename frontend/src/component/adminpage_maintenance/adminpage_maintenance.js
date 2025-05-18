@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './adminpage_maintenance.css'
 import Navbar from '../navbar/navbarmaintenancepage';
 import { useNavigate } from 'react-router-dom';
+import { FaSearch } from 'react-icons/fa';
 
 export default function Adminpage() {
     const apiUrl = process.env.REACT_APP_API_URL;
@@ -26,6 +27,46 @@ export default function Adminpage() {
     const [products, setProducts] = useState([]);
     const [editProductId, setEditProductId] = useState(null);
 
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredProducts, setFilteredProducts] = useState([]);
+
+
+    const handleSearch = () => {
+        alert("x");
+        if (!searchTerm.trim()) {
+            setFilteredProducts([]);
+            return;
+        }
+        const searchLower = searchTerm.toLowerCase();
+        const result = products.filter(
+            (product) =>
+                product.customer.toLowerCase().includes(searchLower) ||
+                product.serial.toLowerCase().includes(searchLower)
+        );
+        setFilteredProducts(result);
+    }
+
+    const handleSearchUpdate = (data = products) => {
+    if (!searchTerm.trim()) {
+        setFilteredProducts([]);
+        return;
+    }
+    const searchLower = searchTerm.toLowerCase();
+    const result = data.filter(
+        (product) =>
+            product.customer.toLowerCase().includes(searchLower) ||
+            product.serial.toLowerCase().includes(searchLower)
+    );
+    setFilteredProducts(result);
+}
+
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleSearch();
+        }
+    }
+
     useEffect(() => {
         fetch(`${apiUrl}/maintenance`)
           .then(res => res.json())
@@ -49,7 +90,7 @@ export default function Adminpage() {
             );
 
             if (isProductExists) {
-                alert('มีข้อมูล ' + value4 + ' อยู่แล้ว')
+                alert('มีข้อมูล '+ value4 + ' ในระบบแล้ว⚠️');
                 console.log('Product already exists in the database!');
                 return; // ถ้ามีข้อมูลซ้ำไม่ทำการเพิ่ม
             }
@@ -76,7 +117,7 @@ export default function Adminpage() {
             if (!addResponse.ok) {
             throw new Error('Failed to add product');
             }
-
+            alert('คุณได้เพิ่ม ' + value4 + ' เรียบร้อย ✅');
             console.log('Product added successfully!');
 
             // 3. รีเฟรชข้อมูลจากฐานข้อมูลใหม่
@@ -97,6 +138,7 @@ export default function Adminpage() {
             setValue9('IN');
 
         } catch (error) {
+            alert('ผิดพลาดในการเพิ่มข้อมูล ' + value4 + ' ❌');
             console.error('Error:', error);
             console.log('Error adding product');
         }
@@ -173,7 +215,12 @@ export default function Adminpage() {
                 .then((res) => res.json());
 
             setProducts(updatedProducts);
-
+            
+            setFilteredProducts([]);
+            if(searchTerm.trim() !== '')
+            { 
+                handleSearchUpdate(updatedProducts);
+            }
             // เคลียร์ฟอร์ม
             setValue1('');
             setValue2('');
@@ -202,15 +249,15 @@ export default function Adminpage() {
             <div className='input-container'>
                 <div className='input-group'>
                     <h2>Customer</h2>
-                    <input type="text" style={{width:'20vh'}} autoComplete="on" value={value1} onChange={(e) => setValue1(e.target.value)} />
+                    <input type="text" style={{width:'20vh'}} name='customer' autoComplete="on" value={value1} onChange={(e) => setValue1(e.target.value)} />
                 </div>
                 <div className='input-group'>
                     <h2>Brand</h2>
-                    <input type="text" style={{width:'20vh'}} value={value2} onChange={(e) => setValue2(e.target.value)} />
+                    <input type="text" style={{width:'20vh'}} name='brand' autoComplete="on" value={value2} onChange={(e) => setValue2(e.target.value)} />
                 </div>
                 <div className='input-group'>
                     <h2>Model</h2>
-                    <input type="text" style={{width:'30vh'}} value={value3} onChange={(e) => setValue3(e.target.value)} />
+                    <input type="text" style={{width:'30vh'}} name='model' autoComplete="on" value={value3} onChange={(e) => setValue3(e.target.value)} />
                 </div>
                 <div className='input-group'>
                     <h2>Serial</h2>
@@ -218,7 +265,7 @@ export default function Adminpage() {
                 </div>
                 <div className='input-group'>
                     <h2>Location</h2>
-                    <input type="text" style={{width:'30vh'}} value={value6} onChange={(e) => setValue6(e.target.value)} />
+                    <input type="text" style={{width:'30vh'}} name='location' autoComplete="on" value={value6} onChange={(e) => setValue6(e.target.value)} />
                 </div>
 
                 <div className='input-group'>
@@ -231,7 +278,7 @@ export default function Adminpage() {
                 </div>
                 <div className='input-group'>
                     <h2>Status Warranty</h2>
-                    <select name="Warranty" style={{width:'25vh', height:'5.2vh'}} id="Warranty" value={value9} onChange={(e) => setValue9(e.target.value)}>
+                    <select name="Warranty" style={{width:'25vh', height:'4.6vh'}} id="Warranty" value={value9} onChange={(e) => setValue9(e.target.value)}>
                         <option value="in">IN</option>
                         <option value="out">OUT</option>
                     </select>
@@ -243,8 +290,12 @@ export default function Adminpage() {
             
         </div>
         <div className='admin-displayzone'>
-            <h1>All Product Maintenance List</h1>
-        
+            <div className='admin-container'>
+                <input name='customer' autoComplete='on' placeholder=' search...(customer)(serial)' onChange={(e) => setSearchTerm(e.target.value)} onKeyDown={handleKeyDown}></input>
+                <button className="search-button" onClick={handleSearch} > <FaSearch /> </button>
+                <h1>All Product Maintenance List</h1>
+            </div>
+
             <table>
                 <thead>
                     <tr>
@@ -260,28 +311,56 @@ export default function Adminpage() {
                     </tr>
                 </thead>
                 <tbody>
-                    {products.map((product) => {
-                        return (
-                            <tr key={product._id}>
-                                <td>{product.customer}</td>
-                                <td>{product.brand}</td>
-                                <td>{product.model}</td>
-                                <td>{product.serial}</td>
-                                <td>{product.location}</td>
-                                <td>{product.startDate}</td>
-                                <td>{product.endDate}</td>
-                                <td>{product.statusWarranty}</td>
-                                <td>
-                                    <button className='delete_button' onClick={() => handleDelete(product._id)}>Delete</button>
-                                    <button className='edit_button' onClick={() => {
-                                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                                        handleEdit(product)}}>
-                                        Edit
-                                    </button>
-                                </td>
-                            </tr>
-                        );
-                    })}
+                {/* แสดงผลลัพธ์การค้นหา (ถ้ามี) ไว้ด้านบน */}
+                {filteredProducts.map((product) => (
+                    <tr key={product._id}>
+                    <td>{product.customer}</td>
+                    <td>{product.brand}</td>
+                    <td>{product.model}</td>
+                    <td>{product.serial}</td>
+                    <td>{product.location}</td>
+                    <td>{product.startDate}</td>
+                    <td>{product.endDate}</td>
+                    <td>{product.statusWarranty}</td>
+                    <td>
+                        <button className='delete_button' onClick={() => handleDelete(product._id)}>Delete</button>
+                        <button className='edit_button' onClick={() => {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        handleEdit(product);
+                        }}>
+                        Edit
+                        </button>
+                    </td>
+                    </tr>
+                ))}
+
+                {/* แล้วค่อยแสดง product ปกติ (ยกเว้นที่ค้นเจอแล้ว) */}
+                {products
+                    .filter(
+                    (product) =>
+                        !filteredProducts.some((fp) => fp._id === product._id)
+                    )
+                    .map((product) => (
+                    <tr key={product._id}>
+                        <td>{product.customer}</td>
+                        <td>{product.brand}</td>
+                        <td>{product.model}</td>
+                        <td>{product.serial}</td>
+                        <td>{product.location}</td>
+                        <td>{product.startDate}</td>
+                        <td>{product.endDate}</td>
+                        <td>{product.statusWarranty}</td>
+                        <td>
+                        <button className='delete_button' onClick={() => handleDelete(product._id)}>Delete</button>
+                        <button className='edit_button' onClick={() => {
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                            handleEdit(product);
+                        }}>
+                            Edit
+                        </button>
+                        </td>
+                    </tr>
+                ))}
                 </tbody>
             </table>
         </div>

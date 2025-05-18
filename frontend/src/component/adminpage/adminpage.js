@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './adminpage.css'
 import Navbar from '../navbar/navbar';
 import { useNavigate } from 'react-router-dom';
+import { FaSearch } from 'react-icons/fa';
 
 
 export default function Adminpage() {
@@ -24,6 +25,29 @@ export default function Adminpage() {
     const [products, setProducts] = useState([]);
     const [editProductId, setEditProductId] = useState(null);
 
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredProducts, setFilteredProducts] = useState([]);
+
+    const handleSearch = () => {
+        if (!searchTerm.trim()) {
+            setFilteredProducts([]);
+            return;
+        }
+        const searchLower = searchTerm.toLowerCase();
+        const result = products.filter(
+            (product) =>
+                product.product.toLowerCase().includes(searchLower) ||
+                product.brand.toLowerCase().includes(searchLower) ||
+                product.model.toLowerCase().includes(searchLower)
+        );
+        setFilteredProducts(result);
+    }
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleSearch();
+        }
+    }
 
     useEffect(() => {
         fetch(`${apiUrl}/products`)
@@ -58,7 +82,7 @@ export default function Adminpage() {
             );
 
             if (isProductExists) {
-            alert('มีข้อมูล '+ value3 + ' ในระบบแล้ว!!');
+            alert('มีข้อมูล '+ value3 + ' ในระบบแล้ว⚠️');
             console.log('Product already exists in the database!');
             return; // ถ้ามีข้อมูลซ้ำไม่ทำการเพิ่ม
             }
@@ -82,6 +106,7 @@ export default function Adminpage() {
             throw new Error('Failed to add product');
             }
 
+            alert('คุณได้เพิ่ม ' + value3 + ' เรียบร้อย ✅');
             console.log('Product added successfully!');
 
             // 3. รีเฟรชข้อมูลจากฐานข้อมูลใหม่
@@ -99,6 +124,7 @@ export default function Adminpage() {
             setValue5('');
 
         } catch (error) {
+            alert('ผิดพลาดในการเพิ่มข้อมูล ' + value3 + ' ❌');
             console.error('Error:', error);
             console.log('Error adding product');
         }
@@ -162,6 +188,11 @@ export default function Adminpage() {
             // โหลดข้อมูลใหม่
             const updatedProducts = await fetch(`${apiUrl}/products`)
                 .then((res) => res.json());
+            
+            if(searchTerm !== '')
+            {
+                handleSearch();
+            }
 
             setProducts(updatedProducts);
 
@@ -216,7 +247,11 @@ export default function Adminpage() {
             
         </div>
         <div className='admin-displayzone'>
-            <h1>All Product List</h1>
+            <div className='admin-container'>
+                <input name='customer' autoComplete='on' placeholder=' search...(product)(brand)(model)' onChange={(e) => setSearchTerm(e.target.value)} onKeyDown={handleKeyDown}></input>
+                <button className="search-button" onClick={handleSearch} > <FaSearch /> </button>
+                <h1>All Product List</h1>
+            </div>
         
             <table>
                 <thead>
@@ -230,8 +265,7 @@ export default function Adminpage() {
                     </tr>
                 </thead>
                 <tbody>
-                    {products.map((product) => {
-                        return (
+                    {filteredProducts.map((product) => (
                             <tr key={product._id}>
                                 <td>{product.product}</td>
                                 <td>{product.brand}</td>
@@ -246,8 +280,31 @@ export default function Adminpage() {
                                     </button>
                                 </td>
                             </tr>
-                        );
-                    })}
+                        
+                    ))}
+                    {products
+                    .filter(
+                    (product) =>
+                        !filteredProducts.some((fp) => fp._id === product._id)
+                    )
+                    .map((product) => (
+                        <tr key={product._id}>
+                            <td>{product.product}</td>
+                            <td>{product.brand}</td>
+                            <td>{product.model}</td>
+                            <td>{product.description}</td>
+                            <td>{Number(product.price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                            <td>
+                            <button className='delete_button' onClick={() => handleDelete(product._id)}>Delete</button>
+                            <button className='edit_button' onClick={() => {
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                handleEdit(product);
+                            }}>
+                                Edit
+                            </button>
+                            </td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
         </div>

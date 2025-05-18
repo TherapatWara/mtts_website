@@ -9,9 +9,15 @@ export default function Loginpage() {
     const navigate = useNavigate();
 
     const handlelogin = async () =>{
-        if(user === "mtts" & password === "@Passw0rdmtts"){
+        if(user === "admin" & password === "@Passw0rdmtts"){
                 localStorage.setItem('loggedIn', 'true');
+                localStorage.setItem('loggedUser', 'admin');
                 navigate('/selectionpage');
+        }
+        else if(user === "mtts" & password === "@Passw0rd"){
+            localStorage.setItem('loggedIn', 'true');
+            localStorage.setItem('loggedUser', 'user123');
+            navigate('/selectionpage');
         }
         else{
             alert("Invalid username or password!!");
@@ -32,8 +38,8 @@ export default function Loginpage() {
             <div className='login-fill'>
                 <h1>Sign in</h1>
                 <div className='input-zone'>
-                    <input placeholder='  User name' autoComplete="on" value={user} onChange={(e) => setUser(e.target.value)}></input>
-                    <input placeholder='  Password' autoComplete="on"  value={password} onChange={(e) => setPassword(e.target.value) } onkeydown={handleKeyDown}></input>
+                    <input placeholder='  User name' name="username" autoComplete="on" value={user} onChange={(e) => setUser(e.target.value)}></input>
+                    <input placeholder='  Password'  value={password} onChange={(e) => setPassword(e.target.value) } onKeyDown={handleKeyDown}></input>
                 </div>
                 <button onClick={handlelogin}>Sign in</button>
             </div>
