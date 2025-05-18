@@ -32,7 +32,6 @@ export default function Adminpage() {
 
 
     const handleSearch = () => {
-        alert("x");
         if (!searchTerm.trim()) {
             setFilteredProducts([]);
             return;
@@ -165,11 +164,11 @@ export default function Adminpage() {
             console.log('Error deleting product');
         }
     };
-
+/*
     const formatDate = (isoDate) => {
     if (!isoDate) return '';
     return new Date(isoDate).toISOString().split('T')[0];
-    };
+    };*/
 
     const handleEdit = (product) => {
         console.log('Editing product:', product);
