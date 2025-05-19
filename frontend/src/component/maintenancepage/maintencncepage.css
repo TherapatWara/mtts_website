@@ -57,10 +57,36 @@
   border: none;
 }
 
+.exportpdf{
+  border-radius: 10px;
+  border: 0.1px solid gray;
+  background-color: #333333;
+  color: white;
+  font-weight: bold;
+  margin-top: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 5px 10px 5px 10px;
+  
+}
+
+.exportpdf span{
+  color: rgb(255, 35, 35);
+  font-size: 18px;
+}
+
+.exportpdf:hover{
+  background-color: #707070;
+}
+
+.exportpdf-input{
+  border: 0.1px solid black;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  margin-top: 10px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   font-size: 24px;

@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import './maintencncepage.css'
 import Navbar from '../navbar/navbarmaintenancepage';
 
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+
 export default function Maintenancepage() {
     const navigate = useNavigate();
 
@@ -55,6 +58,55 @@ export default function Maintenancepage() {
     }
   };
 
+
+  const exportPDF = () => {
+      const unit = "pt";
+      const size = "A4";
+      const orientation = "portrait";
+      const marginLeft = 40;
+      const doc = new jsPDF(orientation, unit, size);
+
+      doc.setFontSize(12);
+
+      doc.text("ทดสอบฟอนต์ไทย", 10, 10);
+      const title = searchResults[0].customer;
+    
+      //doc.setFontSize(12);
+      //doc.text("ข้อมูลการค้นหา", 14, 32);
+  
+      const headers = [["Brand", "Model", "Serial", "Location", "Start Date", "End Date", "Status Warranty"]];
+      const data = searchResults.map(elt => [
+        elt.brand,
+        elt.model,
+        elt.serial,
+        elt.location,
+        elt.startDate,
+        elt.endDate,
+        elt.statusWarranty,
+      ]);
+  
+      doc.text(title, marginLeft, 40);
+      doc.autoTable({
+        startY: 50,
+        head: headers,
+        body: data,
+        styles: { fontSize: 10 }
+      });
+   
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const signatureText = "sign ................................";
+      const fontSize = 12;
+      doc.setFontSize(fontSize);
+      const textWidth = doc.getTextWidth(signatureText);
+  
+      const x = pageWidth - textWidth - 100; // ช่องขวาเว้น 40pt
+      const y = pageHeight - 100; // ช่องล่างเว้น 40pt
+  
+      doc.text(signatureText, x, y);
+      doc.save("report.pdf");
+    };
+
   return (
     <div className='body'>
       <Navbar />
@@ -64,6 +116,12 @@ export default function Maintenancepage() {
         <button className="search-button" onClick={handleSearch}> <FaSearch /> </button>
       </div>
 
+      {searchResults.length > 0 && (
+        <>
+          <button className='exportpdf' onClick={exportPDF}> Export to <span>PDF</span> </button>
+          <input type='text' className='.admin-displayzone' placeholder='dd/mm/yy'></input>
+        </>
+      )}
       {searchResults.length > 0 && (
         <table>
           <thead>

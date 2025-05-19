@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import './mainpage.css'
 import Navbar from '../navbar/navbar';
 
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+
 
 export default function Mainpage() {
   const navigate = useNavigate();
@@ -56,6 +59,7 @@ export default function Mainpage() {
       handleSearch();
     }
   };
+
 
   return (
     <div className='body'>
