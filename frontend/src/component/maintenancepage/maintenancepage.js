@@ -21,6 +21,7 @@ export default function Maintenancepage() {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const [value, setValue] = useState('');
+  const [dmy, setDmy] = useState('');
   const [products, setProducts] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [clickstatus, setClickstatus] = useState(0);
@@ -34,9 +35,6 @@ export default function Maintenancepage() {
       .catch(err => console.error('Error fetching products:', err));
   }, [apiUrl]);
 
-  const handleChange = (e) => {
-    setValue(e.target.value);
-  };
 
   const handleSearch = () => {
     const results = products.filter(product =>
@@ -65,17 +63,21 @@ export default function Maintenancepage() {
       const orientation = "portrait";
       const marginLeft = 40;
       const doc = new jsPDF(orientation, unit, size);
-
       doc.setFontSize(12);
 
-      doc.text("ทดสอบฟอนต์ไทย", 10, 10);
+      const pageWidth = doc.internal.pageSize.getWidth();
+      //const pageHeight = doc.internal.pageSize.getHeight();
+
+      const date = `Date: ${dmy}`;
+      const textWidth = doc.getTextWidth(date);
+      doc.text(date, pageWidth - textWidth - 40, 40);
+
       const title = searchResults[0].customer;
-    
-      //doc.setFontSize(12);
-      //doc.text("ข้อมูลการค้นหา", 14, 32);
-  
-      const headers = [["Brand", "Model", "Serial", "Location", "Start Date", "End Date", "Status Warranty"]];
-      const data = searchResults.map(elt => [
+      const headers = [["No", "Brand", "Model", "Serial", "Location", "Start Date", "End Date", "Status Warranty"]];
+      console.log("searchResults:", searchResults);
+
+      const data = (searchResults || []).map((elt, index) => [
+        index+1,
         elt.brand,
         elt.model,
         elt.serial,
@@ -90,20 +92,36 @@ export default function Maintenancepage() {
         startY: 50,
         head: headers,
         body: data,
-        styles: { fontSize: 10 }
+        styles: { fontSize: 8 },
+        headStyles: { halign: 'center' },
+        bodyStyles: { halign: 'center' }
       });
+
+      const tableBottomY = doc.lastAutoTable.finalY || 60;
    
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const pageHeight = doc.internal.pageSize.getHeight();
-      const signatureText = "sign ................................";
-      const fontSize = 12;
-      doc.setFontSize(fontSize);
-      const textWidth = doc.getTextWidth(signatureText);
-  
-      const x = pageWidth - textWidth - 100; // ช่องขวาเว้น 40pt
-      const y = pageHeight - 100; // ช่องล่างเว้น 40pt
-  
-      doc.text(signatureText, x, y);
+      const checkerText = "Checker (MT): ______________________________";
+      const supervisorText = "Supervisor (DITS): ______________________________" ;
+      const dateLabel = "Date : __________";
+
+      // ตำแหน่ง x ซ้าย เว้นขอบซ้าย 100pt
+      const xLeft = 80;
+
+      // ตำแหน่ง x ขวา เว้นขอบขวา 100pt (วัดจากขอบขวาลบความกว้างข้อความ)
+      const dateTextWidth = doc.getTextWidth(dateLabel);
+      const xRight = pageWidth - dateTextWidth - 80;
+
+      // ตำแหน่ง y
+      const yChecker = tableBottomY + 50;       // Checker
+      const ySupervisor = yChecker + 20;       // Supervisor
+
+      // วาดข้อความด้านซ้าย
+      doc.text(checkerText, xLeft, yChecker);
+      doc.text(supervisorText, xLeft, ySupervisor);
+
+      // วาดข้อความวันที่ด้านขวา
+      doc.text(dateLabel, xRight, yChecker);
+      doc.text(dateLabel, xRight, ySupervisor);
+
       doc.save("report.pdf");
     };
 
@@ -111,17 +129,20 @@ export default function Maintenancepage() {
     <div className='body'>
       <Navbar />
       <div className='search-fill'>
+        {searchResults.length > 0 && (
+        <>
+          <div className='exportpdf'>
+            Date:<input type='text' value={dmy} onChange={(e) => setDmy(e.target.value)} placeholder='dd/mm/yy'></input>
+            <button  onClick={exportPDF}> Export to <span>PDF</span> </button>
+          
+          </div>
+        </>
+        )}
         <h1>Search</h1>
-        <input type="text" value={value} onChange={handleChange} onKeyDown={handleKeyDown} />
+        <input type="text" value={value} onChange={(e) => setValue(e.target.value)} onKeyDown={handleKeyDown} />
         <button className="search-button" onClick={handleSearch}> <FaSearch /> </button>
       </div>
-
-      {searchResults.length > 0 && (
-        <>
-          <button className='exportpdf' onClick={exportPDF}> Export to <span>PDF</span> </button>
-          <input type='text' className='.admin-displayzone' placeholder='dd/mm/yy'></input>
-        </>
-      )}
+      
       {searchResults.length > 0 && (
         <table>
           <thead>

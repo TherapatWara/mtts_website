@@ -4,7 +4,6 @@
 }
 
 .body{
-  
   color: black;
   text-align: center;
   
@@ -13,11 +12,19 @@
 .search-fill{
   color: white;
   background-color: #1B9996;
-  padding: 50px;
+  padding: 30px;
+
+
 }
 
 .body h1{
+  font-size: 24px;
+  
+}
+
+.body .search-fill h1{
   font-size: 36px;
+  margin-top: -10px;
 }
 
 .body input{
@@ -58,29 +65,41 @@
 }
 
 .exportpdf{
-  border-radius: 10px;
-  border: 0.1px solid gray;
+  font-size: 18px;
+  text-align: right;
+  margin-top: -40px;
+  font-weight: bold;
+}
+
+.exportpdf button{
+  border-radius: 5px;
+  border: none;
   background-color: #333333;
   color: white;
   font-weight: bold;
-  margin-top: 10px;
   cursor: pointer;
   font-size: 18px;
-  padding: 5px 10px 5px 10px;
-  
+  padding: 3px 10px 3px 10px;
 }
 
 .exportpdf span{
   color: rgb(255, 35, 35);
   font-size: 18px;
+
 }
 
-.exportpdf:hover{
-  background-color: #707070;
+.exportpdf button:hover{
+  background-color: #555555;
 }
 
-.exportpdf-input{
-  border: 0.1px solid black;
+.body .exportpdf input{
+  border: none;
+  border-radius: 5px;
+  width: 6%;
+  margin-right: 5px;
+  margin-left: 2px;
+  height: 0%;
+  font-size: 18px;
 }
 
 table {
