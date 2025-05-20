@@ -6,14 +6,13 @@
 .body{
   color: black;
   text-align: center;
-  
+  width: 100%;
 }
 
 .search-fill{
   color: white;
   background-color: #1B9996;
   padding: 30px;
-
 
 }
 
