@@ -10,11 +10,17 @@ import "jspdf-autotable";
 
 export default function Mainpage() {
   const navigate = useNavigate();
+  const loginUser = localStorage.getItem('loggedUser');
     
     useEffect(() => {
       const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
       if (!isLoggedIn) {
         alert('กรุณาเข้าสู่ระบบก่อน');
+        navigate('/');
+      }
+      if(loginUser !== 'admin')
+      {
+        alert('คุณไม่มีสิทธิเข้าถึงข้อมูล');
         navigate('/');
       }
     }, []);
@@ -66,7 +72,7 @@ export default function Mainpage() {
       <Navbar />
       <div className='search-fill'>
         <h1>Search</h1>
-        <input type="text" value={value} onChange={handleChange} onKeyDown={handleKeyDown} />
+        <input type="text" value={value} onChange={handleChange} onKeyDown={handleKeyDown} placeholder=' Search...(product)(brand)(model)'/>
         <button className="search-button" onClick={handleSearch}> <FaSearch /> </button>
       </div>
 

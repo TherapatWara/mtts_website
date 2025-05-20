@@ -7,13 +7,20 @@ import { FaSearch } from 'react-icons/fa';
 
 export default function Adminpage() {
     const navigate = useNavigate();
+    const loginUser = localStorage.getItem('loggedUser');
+    
     useEffect(() => {
-            const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
-            if (!isLoggedIn) {
-              alert('กรุณาเข้าสู่ระบบก่อน');
-              navigate('/');
-            }
-          }, []);
+      const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
+      if (!isLoggedIn) {
+        alert('กรุณาเข้าสู่ระบบก่อน');
+        navigate('/');
+      }
+      if(loginUser !== 'admin')
+      {
+        alert('คุณไม่มีสิทธิเข้าถึงข้อมูล');
+        navigate('/');
+      }
+    }, []);
 
     const apiUrl = process.env.REACT_APP_API_URL;
 

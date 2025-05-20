@@ -14,6 +14,7 @@ export default function Selectionpage() {
       alert('กรุณาเข้าสู่ระบบก่อน');
       navigate('/');
     }
+    
   }, []);
   
   return (

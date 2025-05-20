@@ -66,6 +66,32 @@ export default function Adminpage() {
         }
     }
 
+    const handleStartDateChange = (e) => {
+      let value = e.target.value.replace(/\D/g, ''); // เอาเฉพาะตัวเลข
+      if (value.length > 6) value = value.slice(0, 6);
+
+      if (value.length >= 5) {
+        value = value.slice(0, 2) + '/' + value.slice(2, 4) + '/' + value.slice(4);
+      } else if (value.length >= 3) {
+        value = value.slice(0, 2) + '/' + value.slice(2);
+      }
+
+      setValue7(value);
+    };
+
+    const handleEndDateChange = (e) => {
+      let value = e.target.value.replace(/\D/g, ''); // เอาเฉพาะตัวเลข
+      if (value.length > 6) value = value.slice(0, 6);
+
+      if (value.length >= 5) {
+        value = value.slice(0, 2) + '/' + value.slice(2, 4) + '/' + value.slice(4);
+      } else if (value.length >= 3) {
+        value = value.slice(0, 2) + '/' + value.slice(2);
+      }
+
+      setValue8(value);
+    };
+
     useEffect(() => {
         fetch(`${apiUrl}/maintenance`)
           .then(res => res.json())
@@ -270,11 +296,11 @@ export default function Adminpage() {
 
                 <div className='input-group'>
                     <h2>Start  Date</h2>
-                    <input type="text" style={{width:'25vh'}} value={value7} onChange={(e) => setValue7(e.target.value)} />
+                    <input type="text" style={{width:'25vh'}} value={value7} onChange={handleStartDateChange} placeholder='dd/mm/yy'/>
                 </div>
                 <div className='input-group'>
                     <h2>End  Date</h2>
-                    <input type="text" style={{width:'25vh'}} value={value8} onChange={(e) => setValue8(e.target.value)} />
+                    <input type="text" style={{width:'25vh'}} value={value8} onChange={handleEndDateChange} placeholder='dd/mm/yy'/>
                 </div>
                 <div className='input-group'>
                     <h2>Status Warranty</h2>

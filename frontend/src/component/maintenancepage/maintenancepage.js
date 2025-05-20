@@ -25,6 +25,7 @@ export default function Maintenancepage() {
   const [products, setProducts] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [clickstatus, setClickstatus] = useState(0);
+  
 
   useEffect(() => {
     fetch(`${apiUrl}/maintenance`)
@@ -35,6 +36,18 @@ export default function Maintenancepage() {
       .catch(err => console.error('Error fetching products:', err));
   }, [apiUrl]);
 
+  const handleDateChange = (e) => {
+      let value = e.target.value.replace(/\D/g, ''); // เอาเฉพาะตัวเลข
+      if (value.length > 6) value = value.slice(0, 6);
+
+      if (value.length >= 5) {
+        value = value.slice(0, 2) + '/' + value.slice(2, 4) + '/' + value.slice(4);
+      } else if (value.length >= 3) {
+        value = value.slice(0, 2) + '/' + value.slice(2);
+      }
+
+      setDmy(value);
+  };
 
   const handleSearch = () => {
     const results = products.filter(product =>
@@ -63,7 +76,8 @@ export default function Maintenancepage() {
       const orientation = "portrait";
       const marginLeft = 40;
       const doc = new jsPDF(orientation, unit, size);
-      doc.setFontSize(12);
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
 
       const pageWidth = doc.internal.pageSize.getWidth();
       //const pageHeight = doc.internal.pageSize.getHeight();
@@ -99,7 +113,7 @@ export default function Maintenancepage() {
 
       const tableBottomY = doc.lastAutoTable.finalY || 60;
    
-      const checkerText = "Checker (MT): ______________________________";
+      const checkerText = "Engineer (MT): ______________________________";
       const supervisorText = "Supervisor (DITS): ______________________________" ;
       const dateLabel = "Date : __________";
 
@@ -112,7 +126,7 @@ export default function Maintenancepage() {
 
       // ตำแหน่ง y
       const yChecker = tableBottomY + 50;       // Checker
-      const ySupervisor = yChecker + 20;       // Supervisor
+      const ySupervisor = yChecker + 35;       // Supervisor
 
       // วาดข้อความด้านซ้าย
       doc.text(checkerText, xLeft, yChecker);
@@ -129,18 +143,20 @@ export default function Maintenancepage() {
     <div className='body'>
       <Navbar />
       <div className='search-fill'>
-        {searchResults.length > 0 && (
-        <>
-          <div className='exportpdf'>
-            Date:<input type='text' value={dmy} onChange={(e) => setDmy(e.target.value)} placeholder='dd/mm/yy'></input>
-            <button  onClick={exportPDF}> Export to <span>PDF</span> </button>
-          
-          </div>
-        </>
-        )}
-        <h1>Search</h1>
-        <input type="text" value={value} onChange={(e) => setValue(e.target.value)} onKeyDown={handleKeyDown} />
-        <button className="search-button" onClick={handleSearch}> <FaSearch /> </button>
+        <h1>Maintenancepage</h1>
+        <div className="search-and-export">
+          <input type="text" value={value} onChange={(e) => setValue(e.target.value)} onKeyDown={handleKeyDown} placeholder=' Search...(customer)(serial)'/>
+          <button className="search-button" onClick={handleSearch}> <FaSearch /> </button>
+          {searchResults.length > 0 && (
+            <>
+              <div className='exportpdf'>
+                Date:<input type='text' value={dmy} onChange={handleDateChange} placeholder='dd/mm/yy'></input>
+                <button  onClick={exportPDF}> Export to <span>PDF</span> </button>
+              
+              </div>
+            </>
+          )}
+        </div>
       </div>
       
       {searchResults.length > 0 && (
