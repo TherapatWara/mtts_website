@@ -200,7 +200,136 @@ app.put('/api/maintenance/:id', async (req, res) => {
   }
 });
 
+// recent input------------------------------------------------------------------------------------------------------
+//pricelist product recent
+app.get('/api/product-options', async (req, res) => {
+  try {
+    const result = await mongoose.connection.db.collection('products').aggregate([
+      {
+        $project: {
+          productLower: { $toLower: "$product" }
+        }
+      },
+      {
+        $group: {
+          _id: "$productLower",
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { count: -1 } },
+      { $limit: 5 }
+    ]).toArray();
 
+    res.json(result.map(item => item._id));
+  } catch (err) {
+    console.error('Error fetching product options:', err);
+    res.status(500).send('Error fetching product options');
+  }
+});
+
+//pricelist brand recent
+app.get('/api/brand-options-pricelist', async (req, res) => {
+  try {
+    const result = await mongoose.connection.db.collection('products').aggregate([
+      {
+        $project: {
+          brandLower: { $toLower: "$brand" }
+        }
+      },
+      {
+        $group: {
+          _id: "$brandLower",
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { count: -1 } },
+      { $limit: 5 }
+    ]).toArray();
+
+    res.json(result.map(item => item._id));
+  } catch (err) {
+    console.error('Error fetching brand options pricelist:', err);
+    res.status(500).send('Error fetching brand options pricelist');
+  }
+});
+
+//maintenance customer recent
+app.get('/api/customer-options', async (req, res) => {
+  try {
+    const result = await mongoose.connection.db.collection('maintenances').aggregate([
+      {
+        $project: {
+          customerLower: { $toLower: "$customer" }
+        }
+      },
+      {
+        $group: {
+          _id: "$customerLower",
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { count: -1 } },
+      { $limit: 5 }
+    ]).toArray();
+
+    res.json(result.map(item => item._id));
+  } catch (err) {
+    console.error('Error fetching customer options:', err);
+    res.status(500).send('Error fetching customer options');
+  }
+});
+
+//maintenance brand recent
+app.get('/api/brand-options-maintenance', async (req, res) => {
+  try {
+    const result = await mongoose.connection.db.collection('maintenances').aggregate([
+      {
+        $project: {
+          brandLower: { $toLower: "$brand" }
+        }
+      },
+      {
+        $group: {
+          _id: "$brandLower",
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { count: -1 } },
+      { $limit: 5 }
+    ]).toArray();
+
+    res.json(result.map(item => item._id));
+  } catch (err) {
+    console.error('Error fetching brand options maintenance:', err);
+    res.status(500).send('Error fetching brand options maintenance');
+  }
+});
+
+//maintenance model recent
+app.get('/api/model-options-maintenance', async (req, res) => {
+  try {
+    const result = await mongoose.connection.db.collection('maintenances').aggregate([
+      {
+        $project: {
+          modelLower: { $toLower: "$model" }
+        }
+      },
+      {
+        $group: {
+          _id: "$modelLower",
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { count: -1 } },
+      { $limit: 5 }
+    ]).toArray();
+
+    res.json(result.map(item => item._id));
+  } catch (err) {
+    console.error('Error fetching model options maintenance:', err);
+    res.status(500).send('Error fetching model options maintenance');
+  }
+});
 
 
 // ✅ ต้องอยู่ล่างสุด

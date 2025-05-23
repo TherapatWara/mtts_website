@@ -30,6 +30,9 @@ export default function Adminpage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredProducts, setFilteredProducts] = useState([]);
 
+    const [customerOptions, setCustomerOptions] = useState([]);
+    const [brandmaintenanceOptions, setBrandmaintenanceOptions] = useState([]);
+    const [modelmaintenanceOptions, setModelmaintenanceOptions] = useState([]);
 
     const handleSearch = () => {
         if (!searchTerm.trim()) {
@@ -92,6 +95,7 @@ export default function Adminpage() {
       setValue8(value);
     };
 
+// <useeffect----------------------------------------------------------------------------------------------------------------------
     useEffect(() => {
         fetch(`${apiUrl}/maintenance`)
           .then(res => res.json())
@@ -101,8 +105,28 @@ export default function Adminpage() {
           .catch(err => console.error('Error fetching products:', err));
       }, [apiUrl]);
 
-    
+    useEffect(() => {
+    fetch(`${apiUrl}/customer-options`)
+        .then(res => res.json())
+        .then(data => setCustomerOptions(data))
+        .catch(err => console.error('Error fetching product options:', err));
+    }, [apiUrl]);
 
+    useEffect(() => {
+    fetch(`${apiUrl}/brand-options-maintenance`)
+        .then(res => res.json())
+        .then(data => setBrandmaintenanceOptions(data))
+        .catch(err => console.error('Error fetching product options:', err));
+    }, [apiUrl]);
+
+    useEffect(() => {
+    fetch(`${apiUrl}/model-options-maintenance`)
+        .then(res => res.json())
+        .then(data => setModelmaintenanceOptions(data))
+        .catch(err => console.error('Error fetching product options:', err));
+    }, [apiUrl]);
+
+// useeffect/>----------------------------------------------------------------------------------------------------------------------
 
     const handleAdd = async () => {
         try {
@@ -149,8 +173,23 @@ export default function Adminpage() {
             const updatedProducts = await fetch(`${apiUrl}/maintenance`)
             .then((res) => res.json())
             .catch((err) => console.error('Error fetching products:', err));
-
             setProducts(updatedProducts); // อัปเดต state ของ products
+
+            //recent update
+            const updateCustomer = await fetch(`${apiUrl}/customer-options`)
+            .then(res => res.json())
+            .catch(err => console.error('Error fetching customer options:', err));
+            setCustomerOptions(updateCustomer);
+
+            const updateBrandOptionMaintenance = await fetch(`${apiUrl}/brand-options-maintenance`)
+            .then(res => res.json())
+            .catch(err => console.error('Error fetching brand options maintenance:', err));
+            setBrandmaintenanceOptions(updateBrandOptionMaintenance);
+
+            const updateModelOptionMaintenance = await fetch(`${apiUrl}/model-options-maintenance`)
+            .then(res => res.json())
+            .catch(err => console.error('Error fetching model options maintenance:', err));
+            setModelmaintenanceOptions(updateModelOptionMaintenance);
 
             // 4. ล้างฟอร์ม
             setValue1('');
@@ -237,8 +276,7 @@ export default function Adminpage() {
             
             // โหลดข้อมูลใหม่
             const updatedProducts = await fetch(`${apiUrl}/maintenance`)
-                .then((res) => res.json());
-
+            .then((res) => res.json());
             setProducts(updatedProducts);
             
             setFilteredProducts([]);
@@ -275,15 +313,54 @@ export default function Adminpage() {
             <div className='input-container'>
                 <div className='input-group'>
                     <h2>Customer</h2>
-                    <input type="text" style={{width:'20vh'}} name='customer' autoComplete="on" value={value1} onChange={(e) => setValue1(e.target.value)} />
+                    {/*<input type="text" style={{width:'20vh'}} name='customer' autoComplete="on" value={value1} onChange={(e) => setValue1(e.target.value)} />*/}
+                    <input
+                        type="text"
+                        list="customer-options"
+                        style={{ width: '20vh' }}
+                        value={value1}
+                        onChange={(e) => setValue1(e.target.value)}
+                        onClick={(e) => e.target.showPicker && e.target.showPicker()} // สำหรับบาง browser ให้เปิด dropdown เมื่อคลิก
+                    />
+                    <datalist id="customer-options">
+                        {customerOptions.map((option, index) => (
+                            <option key={index} value={option} />
+                        ))}
+                    </datalist>  
                 </div>
                 <div className='input-group'>
                     <h2>Brand</h2>
-                    <input type="text" style={{width:'20vh'}} name='brand' autoComplete="on" value={value2} onChange={(e) => setValue2(e.target.value)} />
+                    {/*<input type="text" style={{width:'20vh'}} name='brand' autoComplete="on" value={value2} onChange={(e) => setValue2(e.target.value)} />*/}
+                    <input
+                        type="text"
+                        list="brand-options-maintenance"
+                        style={{ width: '20vh' }}
+                        value={value2}
+                        onChange={(e) => setValue2(e.target.value)}
+                        onClick={(e) => e.target.showPicker && e.target.showPicker()} // สำหรับบาง browser ให้เปิด dropdown เมื่อคลิก
+                    />
+                    <datalist id="brand-options-maintenance">
+                        {brandmaintenanceOptions.map((option, index) => (
+                            <option key={index} value={option} />
+                        ))}
+                    </datalist>  
                 </div>
                 <div className='input-group'>
                     <h2>Model</h2>
-                    <input type="text" style={{width:'30vh'}} name='model' autoComplete="on" value={value3} onChange={(e) => setValue3(e.target.value)} />
+                    {/*<input type="text" style={{width:'30vh'}} name='model' autoComplete="on" value={value3} onChange={(e) => setValue3(e.target.value)} />*/}
+                    <input
+                        type="text"
+                        list="model-options-maintenance"
+                        style={{ width: '30vh' }}
+                        value={value3}
+                        onChange={(e) => setValue3(e.target.value)}
+                        onClick={(e) => e.target.showPicker && e.target.showPicker()} // สำหรับบาง browser ให้เปิด dropdown เมื่อคลิก
+                    />
+                    <datalist id="model-options-maintenance">
+                        {modelmaintenanceOptions.map((option, index) => (
+                            <option key={index} value={option} />
+                        ))}
+                    </datalist>  
                 </div>
                 <div className='input-group'>
                     <h2>Serial</h2>

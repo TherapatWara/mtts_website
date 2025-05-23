@@ -35,6 +35,10 @@ export default function Adminpage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredProducts, setFilteredProducts] = useState([]);
 
+    const [productOptions, setProductOptions] = useState([]);
+    const [brandpricelistOptions, setBrandpricelistOptions] = useState([]);
+ 
+
     const handleSearch = () => {
         if (!searchTerm.trim()) {
             setFilteredProducts([]);
@@ -70,7 +74,7 @@ export default function Adminpage() {
             handleSearch();
         }
     }
-
+// <useeffect ----------------------------------------------------------------------------------------------------------------------
     useEffect(() => {
         fetch(`${apiUrl}/products`)
           .then(res => res.json())
@@ -79,6 +83,22 @@ export default function Adminpage() {
           })
           .catch(err => console.error('Error fetching products:', err));
       }, [apiUrl]);
+
+    useEffect(() => {
+    fetch(`${apiUrl}/product-options`)
+        .then(res => res.json())
+        .then(data => setProductOptions(data))
+        .catch(err => console.error('Error fetching product options:', err));
+    }, [apiUrl]);
+
+    useEffect(() => {
+    fetch(`${apiUrl}/brand-options-pricelist`)
+        .then(res => res.json())
+        .then(data => setBrandpricelistOptions(data))
+        .catch(err => console.error('Error fetching product options:', err));
+    }, [apiUrl]);
+
+// useeffect/>----------------------------------------------------------------------------------------------------------------------
 
     const formatPrice = (value) => {
     if (!value) return '';
@@ -135,8 +155,19 @@ export default function Adminpage() {
             const updatedProducts = await fetch(`${apiUrl}/products`)
             .then((res) => res.json())
             .catch((err) => console.error('Error fetching products:', err));
-
             setProducts(updatedProducts); // อัปเดต state ของ products
+
+            // recent update
+            const updateProductOption = await fetch(`${apiUrl}/product-options`)
+            .then(res => res.json())
+            .catch(err => console.error('Error fetching product options:', err));
+            setProductOptions(updateProductOption);
+
+            const updateBrandOptionPricelist = await fetch(`${apiUrl}/brand-options-pricelist`)
+            .then(res => res.json())
+            .catch(err => console.error('Error fetching product options:', err));
+            setBrandpricelistOptions(updateBrandOptionPricelist);
+            
 
             // 4. ล้างฟอร์ม
             setValue1('');
@@ -245,11 +276,37 @@ export default function Adminpage() {
             <div className='input-container'>
                 <div className='input-group'>
                     <h2>Product</h2>
-                    <input type="text" style={{width:'20vh'}} value={value1} onChange={(e) => setValue1(e.target.value)} />
+                    {/*<input type="text" style={{width:'20vh'}} value={value1} onChange={(e) => setValue1(e.target.value)} />*/}
+                    <input
+                        type="text"
+                        list="product-options"
+                        style={{ width: '20vh' }}
+                        value={value1}
+                        onChange={(e) => setValue1(e.target.value)}
+                        onClick={(e) => e.target.showPicker && e.target.showPicker()} // สำหรับบาง browser ให้เปิด dropdown เมื่อคลิก
+                    />
+                    <datalist id="product-options">
+                        {productOptions.map((option, index) => (
+                            <option key={index} value={option} />
+                        ))}
+                    </datalist>  
                 </div>
                 <div className='input-group'>
                     <h2>Brand</h2>
-                    <input type="text" style={{width:'15vh'}} value={value2} onChange={(e) => setValue2(e.target.value)} />
+                    {/*<input type="text" style={{width:'15vh'}} value={value2} onChange={(e) => setValue2(e.target.value)} />*/}
+                    <input
+                        type="text"
+                        list="brand-options-pricelist"
+                        style={{ width: '15vh' }}
+                        value={value2}
+                        onChange={(e) => setValue2(e.target.value)}
+                        onClick={(e) => e.target.showPicker && e.target.showPicker()} // สำหรับบาง browser ให้เปิด dropdown เมื่อคลิก
+                    />
+                    <datalist id="brand-options-pricelist">
+                        {brandpricelistOptions.map((option, index) => (
+                            <option key={index} value={option} />
+                        ))}
+                    </datalist>  
                 </div>
                 <div className='input-group'>
                     <h2>Model</h2>
