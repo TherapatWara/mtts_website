@@ -10,6 +10,7 @@ services:
       - mern-app
     env_file:
       - ./frontend/.env
+    restart: always
 
   api-server:
     build:
