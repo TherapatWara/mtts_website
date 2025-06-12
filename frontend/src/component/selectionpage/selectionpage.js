@@ -33,6 +33,11 @@ export default function Selectionpage() {
         <div className='selection' onClick={() => navigate('/maintenancepage')}>
             <h2>Maintenance List</h2>
         </div>
+
+        <div className='selection' onClick={() => navigate('/buyorderpage')}>
+            <h2>Store Manage</h2>
+        </div>
+
         <div className='selection-logout' onClick={() => {
              localStorage.removeItem('loggedIn'); navigate('/'); 
              localStorage.removeItem('loggedUser'); navigate('/'); 

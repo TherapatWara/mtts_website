@@ -1,0 +1,82 @@
+.header-buyorder {
+    background-color: #1B9996;
+    text-align: center;
+    padding: 20px;
+}
+
+.header-buyorder h1{
+    font-size: 36px;
+    color: white;
+}
+
+.body-buyorder{
+    padding: 15px;
+}
+
+.delete_button-buyorder{
+    color: white;
+    background-color: red;
+    border-radius: 5px;
+}
+
+.delete_button-buyorder:hover{
+    background-color: rgba(167, 0, 0, 0.993);
+}
+
+.moretable-buyorder{
+    color: white;
+    background-color: #5D8BFF;
+    border: none ;
+    border-radius: 10px;
+    text-align: center;
+    padding: 1px 47vw 1px 47vw;
+    font-size: 30px;
+    font-weight: bold;
+    display: block;
+    margin: 0 auto;
+    cursor: pointer;
+}
+
+.moretable-buyorder:hover{
+    background-color: #3c59a3;
+}
+
+.bottom-buyorder{
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 35px;
+    margin-top: 30px;
+}
+
+.confirm-buyorder{
+    color: white;
+    background-color: #6FAA4F;
+    border: none;
+    border-radius: 10px;
+    width: 9vw;
+    height: 4.5vh;
+    font-weight: bold;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.confirm-buyorder:hover{
+    background-color: #497035;
+}
+
+.clear-buyorder{
+    color: white;
+    background-color: #df9938;
+    border: none;
+    border-radius: 10px;
+    width: 9vw;
+    height: 4.5vh;
+    font-weight: bold;
+    font-size: 18px;
+    cursor: pointer;
+    margin-right: 1vw;
+}
+
+.clear-buyorder:hover{
+    background-color: #b17a2d;
+}
