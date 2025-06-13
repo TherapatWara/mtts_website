@@ -9,9 +9,9 @@ import Managepagemaintenancepage from './component/adminpage_maintenance/adminpa
 import Loginpage from './component/loginpage/loginpage';
 import Buyorderpage from './component/store/buyorderpage/buyorderpage';
 import Saleorderpage from './component/store/saleorderpage/saleorderpage';
-import Storepage from './component/store/storepage/storepage';
+import Billbuypage from './component/store/storepage/billbuypage'
 import Yourchartpage from './component/store/saleorderpage/yourchartpage';
-import Viewpage from './component/store/storepage/viewpage';
+import Viewpagebuy from './component/store/storepage/viewbuypage';
 
 function App() {
   return (
@@ -26,9 +26,9 @@ function App() {
         <Route path="/manage_maintenancepage" element={<Managepagemaintenancepage />} />
         <Route path="/buyorderpage" element={<Buyorderpage />} />
         <Route path="/saleorderpage" element={<Saleorderpage />} />
-        <Route path="/storepage" element={<Storepage />} />
+        <Route path="/billbuypage" element={<Billbuypage />} />
         <Route path="/saleorderpage/yourchartpage" element={<Yourchartpage/>}/>
-        <Route path='/storepage/viewpage' element={<Viewpage/>}/>
+        <Route path='/billbuypage/viewbuypage' element={<Viewpagebuy/>}/>
       </Routes>
     </Router>
   );

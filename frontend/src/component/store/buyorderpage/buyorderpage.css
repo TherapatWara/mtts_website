@@ -13,6 +13,11 @@
     padding: 15px;
 }
 
+.body-buyorder input{
+    border: 0.1px solid gray;
+    border-radius: 5px;
+}
+
 .delete_button-buyorder{
     color: white;
     background-color: red;

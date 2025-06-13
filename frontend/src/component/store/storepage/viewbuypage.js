@@ -1,44 +1,26 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../../navbar/navbarstore'
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function Viewpage() {
+  const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
   const [rows, setRows] = useState([
       { iv: '', date: '', brand: '', model: '', description: '', unit: '', price: '' }
   ]);
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const iv = params.get('iv');
 
   useEffect(() => {
-        setRows([
-        {
-            iv: '12345',
-            date: '12/06/68',
-            brand: 'Hikvision',
-            model: '	DS-3E1518P-SI',
-            description: 'POE Switch 16 Port',
-            unit: '1',
-            price: '7800'
-        },
-        {
-            iv: '12345',
-            date: '12/06/68',
-            brand: 'Germany',
-            model: 'G2-60609OUT',
-            description: 'Wall Rack 9U OUTDOOR (60x60x61.3cm)',
-            unit: '2',
-            price: '8500'
-        },
-        {
-            iv: '12345',
-            date: '12/06/68',
-            brand: '	Germany',
-            model: 'G7-05002',
-            description: 'FAN Heavy Duty 2 x 4"',
-            unit: '13',
-            price: '1345'
-        }
-        ]);
-      }, []);
+    fetch(`${apiUrl}/store`)
+      .then(res => res.json())
+      .then(data => {
+        const filtered = data.filter((item) => item.iv === iv);
+        setRows(filtered);
+      })
+      .catch(err => console.error('Error fetching products:', err));
+  }, [apiUrl, iv]);
 
   return (
     <div>
@@ -77,7 +59,7 @@ export default function Viewpage() {
                   </table>
                 </div>
         <div className='bottom-yourchart'>
-            <button className='back-yourchart' onClick={()=> navigate('/storepage')}>BACK</button>
+            <button className='back-yourchart' onClick={()=> navigate('/billbuypage')}>BACK</button>
         </div>
     </div>
   )

@@ -331,8 +331,68 @@ app.get('/api/model-options-maintenance', async (req, res) => {
   }
 });
 
+// buyorder page------------------------------------------------------------------------------------------------------
+
+const storeSchema = new mongoose.Schema({
+  iv: String,
+  date: String,
+  brand: String,
+  model: String,
+  description: String,
+  unit: String,
+  price: Number,
+});
+const Store = mongoose.model('Store', storeSchema);
+
+app.get('/api/store', async (req, res) => {
+  try {
+    const stores = await Store.find(); // ดึงข้อมูลทั้งหมด
+    res.json(stores);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการดึงข้อมูล' });
+  }
+});
 
 // ✅ ต้องอยู่ล่างสุด
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
+app.post('/api/store', async (req, res) => {
+  try {
+    const {iv, date, brand, model, description, unit, price} = req.body;
+    console.log(' [POST] Incoming Data(store):', { iv, date, brand, model, description, unit, price });
+
+    const newStore = new Store({
+      iv, 
+      date,
+      brand, 
+      model, 
+      description, 
+      unit, 
+      price
+    });
+
+    await newStore.save();
+    res.status(201).json(newStore);
+  } catch (err) {
+    console.error('Error saving maintenance:', err);
+    res.status(500).send('Error saving maintenance');
+  }
+});
+
+app.delete('/api/store/:id', async (req, res) => {
+  const storeId = req.params.id;
+  try {
+    const deletedStore = await Store.findByIdAndDelete(storeId);
+    if (!deletedStore) {
+      return res.status(404).send('Store record not found');
+    }
+    res.status(200).json({ message: 'Store record deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting store:', err);
+    res.status(500).send('Error deleting store');
+  }
+});
+

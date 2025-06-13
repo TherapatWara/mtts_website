@@ -12,6 +12,7 @@ export default function Navbar() {
           <div className='page'>
               <h2 onClick={() => navigate('/buyorderpage')}>Buy order</h2>
               <h2 onClick={() => navigate('/saleorderpage')}>Sale order</h2>
+              <h2 onClick={() => navigate('/billbuypage')}>Bills</h2>
               <h2 onClick={() => navigate('/storepage')}>Store</h2>
           </div>
       </div>

@@ -51,6 +51,7 @@ export default function Saleorderpage() {
   };
 
   const handleAdd = () => {
+    
     setShowPopup(true);
     setTimeout(() => {
       setShowPopup(false);
@@ -58,7 +59,7 @@ export default function Saleorderpage() {
   };
 
   return (
-   <div>
+   <div className='body'>
         <Navbar />
         <div className='header-saleorder'>
           <h1>Sale Order</h1>
@@ -92,7 +93,7 @@ export default function Saleorderpage() {
                   <td>{row.model}</td>
                   <td>{row.description}</td>
                   <td>{row.unit}</td>
-                  <td><input className='unitsale-input' type='number' min={0} defaultValue={0}></input></td>
+                  <td><input className='unitsale-input' style={{width:'5vw'}} type='number' min={0} defaultValue={0}></input></td>
                   <td><button className='add-button-saleorder' onClick={handleAdd}>ADD</button></td>
                 </tr>
               ))}
