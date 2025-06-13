@@ -1,0 +1,16 @@
+.delete-button-store{
+    color: white;
+    background-color: red;
+    border-radius: 5px;
+    width: 5.5vw;
+    margin-right: 10px;
+    text-align: center;
+}
+
+.delete-button-store:hover{
+    background-color: rgb(204, 0, 0);
+}
+
+.body-buyorder p{
+    text-align: center;
+}

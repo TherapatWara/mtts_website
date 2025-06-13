@@ -11,6 +11,7 @@ import Buyorderpage from './component/store/buyorderpage/buyorderpage';
 import Saleorderpage from './component/store/saleorderpage/saleorderpage';
 import Storepage from './component/store/storepage/storepage';
 import Yourchartpage from './component/store/saleorderpage/yourchartpage';
+import Viewpage from './component/store/storepage/viewpage';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/saleorderpage" element={<Saleorderpage />} />
         <Route path="/storepage" element={<Storepage />} />
         <Route path="/saleorderpage/yourchartpage" element={<Yourchartpage/>}/>
+        <Route path='/storepage/viewpage' element={<Viewpage/>}/>
       </Routes>
     </Router>
   );

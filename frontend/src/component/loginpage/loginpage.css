@@ -71,8 +71,8 @@
     margin-top: 5vh;
     text-align: center;
     border: none;
-    background-color: #176FF8;
-    color: white;
+    background-color: #FEBC3E;
+    color: black;
     width: 85%;
     height: 12%;
     font-weight: bold;
@@ -82,5 +82,5 @@
 }
 
 .login-body button:hover{
-    background-color: #0f4191;
+    background-color: #da8d00;
 }
