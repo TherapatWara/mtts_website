@@ -341,7 +341,7 @@ export default function Storepage() {
           <input
             name="customer"
             autoComplete="on"
-            placeholder=" search...(product)(brand)(model)"
+            placeholder=" search...(brand)(model)"
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyDown={handleKeyDown}
           ></input>
