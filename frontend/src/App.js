@@ -12,6 +12,7 @@ import Saleorderpage from './component/store/saleorderpage/saleorderpage';
 import Billbuypage from './component/store/storepage/billbuypage'
 import Yourchartpage from './component/store/saleorderpage/yourchartpage';
 import Viewpagebuy from './component/store/storepage/viewbuypage';
+import Storepage from './component/store/storepage/storepage';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/billbuypage" element={<Billbuypage />} />
         <Route path="/saleorderpage/yourchartpage" element={<Yourchartpage/>}/>
         <Route path='/billbuypage/viewbuypage' element={<Viewpagebuy/>}/>
+        <Route path='/storepage' element={<Storepage/>}/>
       </Routes>
     </Router>
   );

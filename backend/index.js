@@ -354,11 +354,6 @@ app.get('/api/store', async (req, res) => {
   }
 });
 
-// ✅ ต้องอยู่ล่างสุด
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
-
 app.post('/api/store', async (req, res) => {
   try {
     const {iv, date, brand, model, description, unit, price} = req.body;
@@ -394,5 +389,86 @@ app.delete('/api/store/:id', async (req, res) => {
     console.error('Error deleting store:', err);
     res.status(500).send('Error deleting store');
   }
+});
+
+//Stock  ----------------------------------------------------------------------------------------
+const stockSchema = new mongoose.Schema({
+  brand: String,
+  model: String,
+  description: String,
+  unit: Number,
+});
+const Stock = mongoose.model('Stock', stockSchema);
+
+app.get('/api/stock', async (req, res) => {
+  try {
+    const stock = await Stock.find(); // ดึงข้อมูลทั้งหมด
+    res.json(stock);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการดึงข้อมูล' });
+  }
+});
+
+app.post('/api/stock', async(req, res) => {
+  try {
+    const {brand, model, description, unit} = req.body;
+    console.log(' [POST] Incoming Add Data(stock):', { brand, model, description, unit });
+
+    const newStock = new Stock({
+      brand, 
+      model, 
+      description, 
+      unit, 
+    });
+
+    await newStock.save();
+    res.status(201).json(newStock);
+  } catch (err) {
+    console.error('Error saving stock:', err);
+    res.status(500).send('Error saving stock');
+  }
+});
+
+// DELETE stock
+app.delete('/api/stock/:id', async (req, res) => {
+  const stockId = req.params.id;
+  try {
+    const deletedStock = await Stock.findByIdAndDelete(stockId);
+    if (!deletedStock) {
+      return res.status(404).send('Stock record not found');
+    }
+    res.status(200).json({ message: 'Stock record deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting stock:', err);
+    res.status(500).send('Error deleting stock');
+  }
+});
+
+app.put('/api/stock/:id', async (req, res) => {
+  try {
+    const stockId = req.params.id;
+    const updateData = req.body;
+
+    const updated = await Stock.findByIdAndUpdate(stockId, updateData, {
+      new: true,
+    });
+
+    if (!updated) {
+      return res.status(404).send("Stock not found");
+    }
+
+    res.json(updated);
+  } catch (err) {
+    console.error("Error updating stock:", err);
+    res.status(500).send("Error updating stock");
+  }
+});
+
+
+
+// ✅ ต้องอยู่ล่างสุด -------------------------------------------------------------------------------------------------
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
 });
 
