@@ -36,10 +36,8 @@
     background-color: rgb(189, 189, 189);
 }
 
-.selection-logout{
+.selection-logout button{
     border-radius: 10px;
-    padding-top: 10px ;
-    padding-bottom: 10px ;
     background-color: #EE0000;
     margin: 0 auto;
     margin-top: 5vh;
@@ -48,8 +46,10 @@
     cursor: pointer;
     box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
     transition: all 300ms ease;
+    font-weight: bold;
+    
 }
 
-.selection-logout:hover{
+.selection-logout button:hover{
     background-color: #860000;
 }

@@ -280,11 +280,11 @@ export default function Storepage() {
     <div className="body">
       <Navbar />
       <div className="admin-search-fill">
-        <h1>Add Product Store</h1>
-        <div className="input-container">
+        <h1>Product Store</h1>
+        {/* <div className="input-container">
           <div className="input-group">
             <h2>Brand</h2>
-            {/*<input type="text" style={{width:'15vh'}} value={value2} onChange={(e) => setValue2(e.target.value)} />*/}
+            
             <input
               type="text"
               list="brand-options-pricelist"
@@ -327,14 +327,14 @@ export default function Storepage() {
             />
           </div>
           <div className="input-group">
-            {/* {editProductId ? (
+             {editProductId ? (
               <button onClick={handleUpdate}>UPDATE</button>
             ) : (
               <button onClick={handleAdd}>ADD</button>
-            )} */}
+            )} 
             <button onClick={handleAdd}>ADD</button>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="admin-displayzone">
         <div className="admin-container">
@@ -376,7 +376,7 @@ export default function Storepage() {
                   >
                     Delete
                   </button>
-                  <button
+                  {/* <button
                     className="edit_button"
                     onClick={() => {
                       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -384,7 +384,7 @@ export default function Storepage() {
                     }}
                   >
                     Edit
-                  </button>
+                  </button> */}
                 </td>
               </tr>
             ))}
@@ -406,7 +406,7 @@ export default function Storepage() {
                     >
                       Delete
                     </button>
-                    <button
+                    {/* <button
                       className="edit_button"
                       onClick={() => {
                         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -414,7 +414,7 @@ export default function Storepage() {
                       }}
                     >
                       Edit
-                    </button>
+                    </button> */}
                   </td>
                 </tr>
               ))}

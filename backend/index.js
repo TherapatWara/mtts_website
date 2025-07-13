@@ -400,15 +400,39 @@ const stockSchema = new mongoose.Schema({
 });
 const Stock = mongoose.model('Stock', stockSchema);
 
+const itemSchema = new mongoose.Schema({
+  date: String,           // ถ้ามี
+  brand: String,
+  model: String,
+  description: String,
+  unit: Number,
+  price: Number,
+});
+
+const billsaleSchema = new mongoose.Schema({
+  items: [itemSchema],
+  projectname: { type: String, required: true },
+  date: { type: Date, default: Date.now },
+});
+const Billsale = mongoose.model("Billsale", billsaleSchema);
+
+
 app.get('/api/stock', async (req, res) => {
   try {
-    const stock = await Stock.find(); // ดึงข้อมูลทั้งหมด
+    const { brand, model } = req.query;
+
+    let query = {};
+    if (brand) query.brand = brand;
+    if (model) query.model = model;
+
+    const stock = await Stock.find(query);
     res.json(stock);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการดึงข้อมูล' });
+    res.status(500).json({ message: 'Error fetching stock' });
   }
 });
+
 
 app.post('/api/stock', async(req, res) => {
   try {
@@ -464,6 +488,54 @@ app.put('/api/stock/:id', async (req, res) => {
     res.status(500).send("Error updating stock");
   }
 });
+
+//Billsale  ----------------------------------------------------------------------------------------
+app.post('/api/billsale', async (req, res) => {
+  const { date, items, projectname } = req.body;
+
+  if (!items || !Array.isArray(items) || items.length === 0 || !projectname) {
+    return res.status(400).json({ message: 'Missing projectname or items' });
+  }
+
+  try {
+    const bill = new Billsale({ date, items, projectname });
+    await bill.save();
+    res.status(201).json({ message: 'BillSale created', bill });
+  } catch (error) {
+    console.error("POST /billsale error:", error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+// GET all billsale
+app.get('/api/billsale', async (req, res) => {
+  try {
+    const bills = await Billsale.find();  // ใช้ Mongoose model แทน db.collection
+    res.json(bills);
+  } catch (error) {
+    console.error("GET /billsale error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// DELETE billsale by ID
+app.delete('/api/billsale/:id', async (req, res) => {
+  const billsaleId = req.params.id;
+  try {
+    const deletedBill = await Billsale.findByIdAndDelete(billsaleId);
+    if (!deletedBill) {
+      return res.status(404).send('Billsale record not found');
+    }
+    res.status(200).json({ message: 'Billsale record deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting billsale:', err);
+    res.status(500).send('Error deleting billsale');
+  }
+});
+
+
+
 
 
 

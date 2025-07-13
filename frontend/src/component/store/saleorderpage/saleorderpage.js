@@ -3,9 +3,12 @@ import Navbar from "../../navbar/navbarstore";
 import { FaSearch } from "react-icons/fa";
 import "./saleorderpage.css";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export default function Saleorderpage() {
   const navigate = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const [countUnit, setCountUnit] = useState({});
   const [searchvalue, setSearchvalue] = useState("");
   const [rows, setRows] = useState([
     {
@@ -18,39 +21,60 @@ export default function Saleorderpage() {
       price: "",
     },
   ]);
-  const [showPopup, setShowPopup] = useState(false);
+  const [filteredRows, setFilteredRows] = useState([]);
+  const [unitSaleList, setUnitSaleList] = useState({});
+
+  const fetchAllStoreData = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/stock`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch stock data");
+      }
+
+      const data = await response.json();
+      console.log("📦 ข้อมูลใน stock ทั้งหมด:", data);
+
+      // ถ้าต้องการแสดงใน UI ก็สามารถ setState ได้ เช่น:
+      setRows(data);
+    } catch (error) {
+      console.error("❌ ดึงข้อมูลไม่สำเร็จ:", error);
+    }
+  };
+
+  // <useeffect ----------------------------------------------------------------------------------------------------------------------
+  useEffect(() => {
+    fetchAllStoreData();
+  }, []);
 
   useEffect(() => {
-    setRows([
-      {
-        iv: "12345",
-        date: "12/06/68",
-        brand: "Hikvision",
-        model: "	DS-3E1518P-SI",
-        description: "POE Switch 16 Port",
-        unit: "1",
-        price: "7800",
-      },
-      {
-        iv: "678910",
-        date: "12/06/68",
-        brand: "Germany",
-        model: "G2-60609OUT",
-        description: "Wall Rack 9U OUTDOOR (60x60x61.3cm)",
-        unit: "2",
-        price: "8500",
-      },
-      {
-        iv: "5555555",
-        date: "12/06/68",
-        brand: "	Germany",
-        model: "G7-05002",
-        description: 'FAN Heavy Duty 2 x 4"',
-        unit: "13",
-        price: "1345",
-      },
-    ]);
+    const chartData = JSON.parse(localStorage.getItem("yourChart")) || [];
+
+    const counted = {};
+    chartData.forEach((item) => {
+      const model = item.model;
+      counted[model] = (counted[model] || 0) + Number(item.unit || 0);
+    });
+
+    setCountUnit(counted);
   }, []);
+
+  useEffect(() => {
+    calculateUsedUnits();
+  }, []);
+
+  useEffect(() => {
+    if (!searchvalue.trim()) {
+      setFilteredRows(rows);
+      return;
+    }
+    const searchLower = searchvalue.toLowerCase();
+    const filtered = rows.filter(
+      (item) =>
+        item.brand.toLowerCase().includes(searchLower) ||
+        item.model.toLowerCase().includes(searchLower)
+    );
+    setFilteredRows(filtered);
+  }, [searchvalue, rows]);
 
   const handleChange = (index, field, value) => {
     const updatedRows = [...rows];
@@ -58,12 +82,156 @@ export default function Saleorderpage() {
     setRows(updatedRows);
   };
 
-  const handleAdd = () => {
-    setShowPopup(true);
-    setTimeout(() => {
-      setShowPopup(false);
-    }, 1500); // ซ่อนหลัง 1500ms
+  const calculateUsedUnits = () => {
+    const chartData = JSON.parse(localStorage.getItem("yourChart")) || [];
+
+    const counted = {};
+    chartData.forEach((item) => {
+      const model = item.model;
+      counted[model] = (counted[model] || 0) + Number(item.unit || 0);
+    });
+
+    setCountUnit(counted);
   };
+
+  const handleAdd = (index) => {
+    const unitSale = unitSaleList[index];
+
+    if (isNaN(unitSale) || unitSale <= 0) {
+      Swal.fire({
+        icon: "error",
+        title: "จำนวนสินค้าไม่ถูกต้อง",
+        timer: 1500,
+        didOpen: () => {
+          const title = Swal.getTitle();
+          if (title) {
+            title.style.fontSize = "26px";
+            title.style.fontWeight = "bold";
+            title.style.fontFamily = "Poppins, sans-serif";
+            title.style.textAlign = "center";
+          }
+        },
+        showConfirmButton: false,
+      });
+      return;
+    }
+
+    const selectedRow = rows[index];
+
+    const existing = JSON.parse(localStorage.getItem("yourChart")) || [];
+
+    // ✅ ตรวจสอบว่า model นี้มีอยู่แล้วหรือยัง
+    const existingIndex = existing.findIndex(
+      (item) => item.model === selectedRow.model
+    );
+
+    if (existingIndex !== -1) {
+      // ถ้ามีอยู่แล้ว → บวก unit เข้าไป
+      existing[existingIndex].unit =
+        Number(existing[existingIndex].unit) + Number(unitSale);
+    } else {
+      // ถ้ายังไม่มี → เพิ่มใหม่
+      const orderItem = {
+        iv: selectedRow.iv,
+        brand: selectedRow.brand,
+        model: selectedRow.model,
+        description: selectedRow.description,
+        unit: unitSale,
+        price: selectedRow.price || 0,
+      };
+      existing.push(orderItem);
+    }
+
+    // ✅ อัปเดต localStorage
+    localStorage.setItem("yourChart", JSON.stringify(existing));
+
+    // ✅ อัปเดต countUnit ที่ใช้ลดแสดง unit
+    calculateUsedUnits();
+
+    // ✅ เคลียร์ input
+    setUnitSaleList({
+      ...unitSaleList,
+      [index]: 0,
+    });
+
+    // ✅ แสดง Swal
+    Swal.fire({
+      position: "center",
+      icon: "success",
+      title: "คูณได้เพิ่มสินค้าลงในรถเข็นแล้ว",
+      showConfirmButton: false,
+      timer: 1500,
+      didOpen: () => {
+        const title = Swal.getTitle();
+        if (title) {
+          title.style.fontSize = "26px";
+          title.style.fontWeight = "bold";
+          title.style.fontFamily = "Poppins, sans-serif";
+          title.style.textAlign = "center";
+        }
+      },
+    });
+  };
+
+  // const handleAdd = (index) => {
+  //   const unitSale = unitSaleList[index];
+
+  //   if (isNaN(unitSale) || unitSale <= 0) {
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Please enter valid unit",
+  //       timer: 1500,
+  //       didOpen: () => {
+  //         const titleEl = Swal.getTitle();
+  //         if (titleEl) {
+  //           titleEl.style.fontSize = "18px";
+  //           titleEl.style.fontFamily = "sans-serif";
+  //         }
+  //       },
+  //       showConfirmButton: false,
+  //     });
+  //     return;
+  //   }
+
+  //   const selectedRow = rows[index];
+
+  //   const orderItem = {
+  //     iv: selectedRow.iv,
+  //     brand: selectedRow.brand,
+  //     model: selectedRow.model,
+  //     description: selectedRow.description,
+  //     unit: unitSale,
+  //     price: selectedRow.price || 0,
+  //   };
+
+  //   const existing = JSON.parse(localStorage.getItem("yourChart")) || [];
+  //   const updated = [...existing, orderItem];
+
+  //   localStorage.setItem("yourChart", JSON.stringify(updated));
+
+  //   calculateUsedUnits();
+
+  //   // ✅ Optional: รีเซ็ต input ที่กรอก unit
+  //   setUnitSaleList({
+  //     ...unitSaleList,
+  //     [index]: 0,
+  //   });
+
+  //   Swal.fire({
+  //     position: "center",
+  //     icon: "success",
+  //     title: "Your order has been added to chart",
+  //     showConfirmButton: false,
+  //     timer: 1000,
+  //     didOpen: () => {
+  //       const titleEl = Swal.getTitle();
+  //       if (titleEl) {
+  //         titleEl.style.fontSize = "18px";
+  //         titleEl.style.fontFamily = "sans-serif";
+  //       }
+  //     },
+  //   });
+  // };
 
   return (
     <div className="body">
@@ -110,28 +278,48 @@ export default function Saleorderpage() {
             </tr>
           </thead>
           <tbody>
-            {rows.map((row, index) => (
+            {filteredRows.map((row, index) => (
               <tr key={index}>
                 <td>{row.brand}</td>
                 <td>{row.model}</td>
                 <td>{row.description}</td>
-                <td>{row.unit}</td>
+                <td>{row.unit - (countUnit[row.model] || 0)}</td>
                 <td>
                   <input
                     className="unitsale-input"
                     style={{ width: "5vw" }}
                     type="number"
                     min={0}
-                    defaultValue={0}
-                  ></input>
+                    max={row.unit}
+                    value={unitSaleList[index] || 0}
+                    onChange={(e) => {
+                      let val = parseInt(e.target.value);
+                      if (val < 0) val = 0;
+                      if (val > row.unit) val = row.unit;
+                      setUnitSaleList({
+                        ...unitSaleList,
+                        [index]: val,
+                      });
+                    }}
+                  />
                 </td>
                 <td>
-                  <button className="add-button-saleorder" onClick={handleAdd}>
+                  <button
+                    className="add-button-saleorder"
+                    onClick={() => handleAdd(index)}
+                  >
                     ADD
                   </button>
                 </td>
               </tr>
             ))}
+            {filteredRows.length === 0 && (
+              <tr>
+                <td colSpan={6} style={{ textAlign: "center" }}>
+                  ไม่พบข้อมูลที่ค้นหา
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

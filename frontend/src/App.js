@@ -10,8 +10,10 @@ import Loginpage from './component/loginpage/loginpage';
 import Buyorderpage from './component/store/buyorderpage/buyorderpage';
 import Saleorderpage from './component/store/saleorderpage/saleorderpage';
 import Billbuypage from './component/store/storepage/billbuypage'
+import Billsalepage from './component/store/storepage/billsalepage';
 import Yourchartpage from './component/store/saleorderpage/yourchartpage';
 import Viewpagebuy from './component/store/storepage/viewbuypage';
+import Viewsalepage from './component/store/storepage/viewsalepage';
 import Storepage from './component/store/storepage/storepage';
 
 function App() {
@@ -28,8 +30,10 @@ function App() {
         <Route path="/buyorderpage" element={<Buyorderpage />} />
         <Route path="/saleorderpage" element={<Saleorderpage />} />
         <Route path="/billbuypage" element={<Billbuypage />} />
+        <Route path="/billsalepage" element={<Billsalepage />} />
         <Route path="/saleorderpage/yourchartpage" element={<Yourchartpage/>}/>
         <Route path='/billbuypage/viewbuypage' element={<Viewpagebuy/>}/>
+        <Route path='/billsalepage/viewsalepage' element={<Viewsalepage/>}/>
         <Route path='/storepage' element={<Storepage/>}/>
       </Routes>
     </Router>

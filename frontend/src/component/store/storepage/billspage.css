@@ -14,3 +14,35 @@
 .body-buyorder p{
     text-align: center;
 }
+
+.tab{
+    
+    
+    display: flex;
+}
+.tab button{
+    cursor: pointer;
+    color: white;
+    border: none;
+    background-color: gray;
+
+    width: 10vw;
+    margin-right: 10px;
+    text-align: center;
+}
+
+.tab .tabbuy{
+    margin: 0px;
+    /* background-color: #5D8BFF; */
+}
+.tab .tabsale{
+    margin: 0px;
+    /* background-color: #df9938; */
+}
+
+.tab .tabbuy:hover{
+    background-color: #5D8BFF;
+}
+.tab .tabsale:hover{
+    background-color: #df9938;
+}

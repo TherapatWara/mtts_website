@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../navbar/navbarstore";
-
+import Swal from "sweetalert2";
 import "./buyorderpage.css";
 
 //testpush
@@ -20,7 +20,6 @@ export default function Buyorderpage() {
   const [showPopup, setShowPopup] = useState(false);
   const [stockList, setStockList] = useState([]);
 
-
   const handleChange = (index, field, value) => {
     const updatedRows = [...rows];
     updatedRows[index][field] = value;
@@ -38,7 +37,6 @@ export default function Buyorderpage() {
 
     setRows(updatedRows);
   };
-
 
   const handleDateChange = (index, value) => {
     let v = value.replace(/\D/g, "");
@@ -76,7 +74,6 @@ export default function Buyorderpage() {
     updatedRows.splice(index, 1);
     setRows(updatedRows);
   };
-
   const handleConfirm = () => {
     let inputcheck = 0;
     for (let i = 0; i < rows.length; i++) {
@@ -92,16 +89,132 @@ export default function Buyorderpage() {
         inputcheck = 1;
       } else {
         inputcheck = 0;
+        break; // ถ้าแถวไหนไม่ครบ ให้หยุดเช็คเลย
       }
     }
-    if (inputcheck === 1) {
-      handleAdd();
-      setShowPopup(true);
-      setTimeout(() => {
-        setShowPopup(false);
-      }, 1500);
+
+    if (inputcheck !== 1) {
+      Swal.fire({
+        icon: "warning",
+        title: "กรุณากรอกข้อมูลให้ครบทุกช่อง",
+        confirmButtonText: "ตกลง",
+        didOpen: () => {
+          const title = Swal.getTitle();
+          if (title) {
+            title.style.fontSize = "22px";
+            title.style.fontFamily = "Poppins, sans-serif";
+            title.style.textAlign = "center";
+          }
+        },
+      });
+      return;
     }
+
+    // ถ้าข้อมูลครบ
+    Swal.fire({
+      title: "คุณต้องการจะสร้างบิลซื้อใช่หรือไม่?",
+      html: "โปรดตรวจสอบข้อมูลให้ถูกต้องก่อนกดยืนยัน",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "ใช่, ยืนยัน",
+      cancelButtonText: "ยกเลิก",
+      reverseButtons: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      didOpen: () => {
+        const content = Swal.getHtmlContainer();
+        if (content) {
+          content.style.fontSize = "20px";
+          content.style.fontFamily = "Poppins, sans-serif";
+          content.style.textAlign = "center";
+        }
+        const title = Swal.getTitle();
+        if (title) {
+          title.style.fontSize = "26px";
+          title.style.fontWeight = "bold";
+          title.style.fontFamily = "Poppins, sans-serif";
+          title.style.textAlign = "center";
+        }
+      },
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await handleAdd(); // เรียกฟังก์ชันเพิ่มข้อมูลจริง
+
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "คุณได้ทำใบสั่งซื้อสำเร็จแล้ว",
+            showConfirmButton: false,
+            timer: 1500,
+            didOpen: () => {
+              const title = Swal.getTitle();
+              if (title) {
+                title.style.fontSize = "26px";
+                title.style.fontWeight = "bold";
+                title.style.fontFamily = "Poppins, sans-serif";
+                title.style.textAlign = "center";
+              }
+            },
+          });
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาดในการบันทึก",
+            text: "กรุณาลองใหม่อีกครั้ง",
+            confirmButtonText: "ตกลง",
+            didOpen: () => {
+              const title = Swal.getTitle();
+              if (title) {
+                title.style.fontSize = "22px";
+                title.style.fontFamily = "Poppins, sans-serif";
+                title.style.textAlign = "center";
+              }
+            },
+          });
+        }
+      }
+    });
   };
+
+  // const handleConfirm = () => {
+  //   let inputcheck = 0;
+  //   for (let i = 0; i < rows.length; i++) {
+  //     if (
+  //       rows[i].iv !== "" &&
+  //       rows[i].date !== "" &&
+  //       rows[i].brand !== "" &&
+  //       rows[i].model !== "" &&
+  //       rows[i].description !== "" &&
+  //       rows[i].unit !== "" &&
+  //       rows[i].price !== ""
+  //     ) {
+  //       inputcheck = 1;
+  //     } else {
+  //       inputcheck = 0;
+  //     }
+  //   }
+  //   if (inputcheck === 1) {
+  //     handleAdd();
+  //     Swal.fire({
+  //       position: "center",
+  //       icon: "success",
+  //       title: "คูณได้ทำใบสั่งซื้อสำเร็จแล้ว",
+  //       showConfirmButton: false,
+  //       timer: 1500,
+  //       didOpen: () => {
+  //         const title = Swal.getTitle();
+  //         if (title) {
+  //           title.style.fontSize = "26px";
+  //           title.style.fontWeight = "bold";
+  //           title.style.fontFamily = "Poppins, sans-serif";
+  //           title.style.textAlign = "center";
+  //         }
+  //       },
+  //     });
+
+  //   }
+  // };
 
   const handleClearRows = () => {
     setRows([
@@ -134,7 +247,7 @@ export default function Buyorderpage() {
     }
   };
 
-//useeffect ------------------------------------------------------------------
+  //useeffect ------------------------------------------------------------------
   useEffect(() => {
     fetchAllStoreData();
   }, []);
@@ -151,71 +264,72 @@ export default function Buyorderpage() {
     };
     fetchStock();
   }, [apiUrl]);
-//useeffect ------------------------------------------------------------------
+  //useeffect ------------------------------------------------------------------
 
-const checkAndUpdateStock = async (brand, model, description, addedUnit) => {
-  try {
-    const matchedStock = stockList.find(
-      (item) => item.model.toLowerCase() === model.toLowerCase()
-    );
-
-    if (matchedStock) {
-      // ✅ ถ้ามี → บวก unit
-      const newUnit = matchedStock.unit + Number(addedUnit);
-
-      const response = await fetch(`${apiUrl}/stock/${matchedStock._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          brand,
-          model,
-          description,
-          unit: newUnit,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update stock");
-      }
-
-      console.log("🔁 Updated stock unit to:", newUnit);
-
-      // อัปเดต state
-      const updatedItem = await response.json();
-      setStockList((prev) =>
-        prev.map((item) => (item._id === updatedItem._id ? updatedItem : item))
+  const checkAndUpdateStock = async (brand, model, description, addedUnit) => {
+    try {
+      const matchedStock = stockList.find(
+        (item) => item.model.toLowerCase() === model.toLowerCase()
       );
-    } else {
-      // ❌ ถ้าไม่มี → สร้างใหม่
-      const response = await fetch(`${apiUrl}/stock`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          brand,
-          model,
-          description,
-          unit: Number(addedUnit),
-        }),
-      });
 
-      if (!response.ok) {
-        throw new Error("Failed to create new stock");
+      if (matchedStock) {
+        // ✅ ถ้ามี → บวก unit
+        const newUnit = matchedStock.unit + Number(addedUnit);
+
+        const response = await fetch(`${apiUrl}/stock/${matchedStock._id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            brand,
+            model,
+            description,
+            unit: newUnit,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to update stock");
+        }
+
+        console.log("🔁 Updated stock unit to:", newUnit);
+
+        // อัปเดต state
+        const updatedItem = await response.json();
+        setStockList((prev) =>
+          prev.map((item) =>
+            item._id === updatedItem._id ? updatedItem : item
+          )
+        );
+      } else {
+        // ❌ ถ้าไม่มี → สร้างใหม่
+        const response = await fetch(`${apiUrl}/stock`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            brand,
+            model,
+            description,
+            unit: Number(addedUnit),
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to create new stock");
+        }
+
+        const newStock = await response.json();
+        setStockList((prev) => [...prev, newStock]);
+
+        console.log("✅ Created new stock:", newStock);
       }
-
-      const newStock = await response.json();
-      setStockList((prev) => [...prev, newStock]);
-
-      console.log("✅ Created new stock:", newStock);
+    } catch (err) {
+      console.error("❌ Stock update error:", err);
     }
-  } catch (err) {
-    console.error("❌ Stock update error:", err);
-  }
-};
-
+  };
 
   const handleAdd = async () => {
     try {
@@ -235,7 +349,12 @@ const checkAndUpdateStock = async (brand, model, description, addedUnit) => {
 
       // 2. ถ้าไม่มีข้อมูลซ้ำ จึงทำการเพิ่มสินค้าใหม่
       for (const row of rows) {
-        await checkAndUpdateStock(row.brand, row.model, row.description, row.unit);
+        await checkAndUpdateStock(
+          row.brand,
+          row.model,
+          row.description,
+          row.unit
+        );
 
         const response = await fetch(`${apiUrl}/store`, {
           method: "POST",
@@ -268,11 +387,6 @@ const checkAndUpdateStock = async (brand, model, description, addedUnit) => {
       console.log("Error adding product");
     }
   };
-
-
-
-
-
 
   return (
     <div className="body">
@@ -396,20 +510,6 @@ const checkAndUpdateStock = async (brand, model, description, addedUnit) => {
           CONFIRM
         </button>
       </div>
-      {/*Your order has been successfully sold-----------------------------------------------*/}
-      {showPopup && (
-        <div className="add-popup">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height={100}
-            fill="lime"
-            viewBox="0 0 512 512"
-          >
-            <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z" />
-          </svg>
-          <h3>Your order has been successfully Buy</h3>
-        </div>
-      )}
     </div>
   );
 }
