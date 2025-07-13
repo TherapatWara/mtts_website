@@ -30,7 +30,7 @@ export default function Viewpage() {
 
         </div>
                 <div className='body-buyorder'>
-                  <p>Invoice No : 12345</p>
+                  <p>Invoice No : {rows.iv}</p>
                   <table>
                     <thead>
                       <tr>
